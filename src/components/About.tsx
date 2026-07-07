@@ -38,7 +38,6 @@ export default function About() {
           <p className="text-[var(--text-dim)] mt-1">{education.degree}</p>
           <div className="flex gap-6 mt-4 text-sm font-[var(--mono)] text-[var(--accent-2)]">
             <span>{education.graduation}</span>
-            <span>CGPA {education.cgpa}</span>
           </div>
         </motion.div>
 

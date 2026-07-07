@@ -13,7 +13,6 @@ export const education = {
   school: 'Jain University, Bengaluru',
   degree: 'B.Tech in Computer Science & Engineering (AI & ML)',
   graduation: 'Expected June 2028',
-  cgpa: '7.0 / 10.0',
 }
 
 export const skills = {
@@ -45,6 +44,19 @@ export const projects: Project[] = [
     stack: ['Python', 'Scikit-learn', 'Pandas', 'NumPy'],
     link: 'https://github.com/adityamondal-ai-spec/sentiment-analysis-ml',
   },
+  {
+    title: 'Interactive 3D Portfolio',
+    period: 'Jul 2026 — Present',
+    description:
+      'This site — a single continuous, scroll-reactive 3D experience, with a real-time particle field and rotating shape tracking the cursor behind every section.',
+    bullets: [
+      'Built with React 19, TypeScript, Vite, Three.js/React Three Fiber, and Framer Motion.',
+      '3D background tracks cursor movement on desktop and touch-drag on mobile, with scroll-driven parallax throughout.',
+      'Mobile-specific performance tuning: throttled frame rate, reduced particle count, and disabled backdrop blur on small screens.',
+    ],
+    stack: ['React', 'TypeScript', 'Three.js', 'Framer Motion', 'Tailwind CSS'],
+    link: 'https://github.com/adityamondal-ai-spec/aditya-portfolio',
+  },
 ]
 
 export type ExperienceItem = {
@@ -55,16 +67,6 @@ export type ExperienceItem = {
 }
 
 export const experience: ExperienceItem[] = [
-  {
-    title: 'Editor Intern',
-    org: 'Student Publication', // TODO: replace with real publication/organization name
-    period: 'Dates pending', // TODO: add real start/end dates
-    bullets: [
-      'Managed the end-to-end content pipeline for a monthly issue.',
-      'Improved article clarity by conducting constructive peer review.',
-      'Coordinated with writers to meet publication deadlines and enhance articles.',
-    ],
-  },
   {
     title: 'Volunteer Instructor',
     org: 'Code for Good',
@@ -84,11 +86,6 @@ export const certifications: Certification[] = [
     title: 'Deep Learning Specialization',
     issuer: 'Coursera',
     status: 'Completed — Apr 2023',
-  },
-  {
-    title: 'Associate Cloud Engineer',
-    issuer: 'Google Cloud',
-    status: 'In progress', // TODO: original target date (Jun 2024) has passed — confirm current status
   },
 ]
 

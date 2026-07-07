@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { projects, type Project } from '../data/resume'
 
-function TiltCard({ project }: { project: Project }) {
+function TiltCard({ project, index }: { project: Project; index: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [style, setStyle] = useState<React.CSSProperties>({})
 
@@ -34,7 +34,7 @@ function TiltCard({ project }: { project: Project }) {
         className="absolute -top-6 -right-4 text-[9rem] font-bold leading-none select-none pointer-events-none font-[var(--heading)]"
         style={{ color: 'rgba(124,92,255,0.06)' }}
       >
-        01
+        {String(index + 1).padStart(2, '0')}
       </span>
       <div className="relative flex items-center justify-between mb-4">
         <h3 className="text-xl font-semibold text-[var(--text-h)]">{project.title}</h3>
@@ -91,8 +91,8 @@ export default function Projects() {
       </motion.div>
 
       <div className="grid sm:grid-cols-1 gap-8">
-        {projects.map((p) => (
-          <TiltCard key={p.title} project={p} />
+        {projects.map((p, i) => (
+          <TiltCard key={p.title} project={p} index={i} />
         ))}
       </div>
     </section>

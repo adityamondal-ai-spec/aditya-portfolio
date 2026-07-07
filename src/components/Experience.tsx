@@ -62,19 +62,28 @@ export default function Experience() {
       >
         Certifications
       </motion.h3>
-      <Marquee
-        speed={22}
-        items={certifications.map((c) => (
-          <div
-            key={c.title}
-            className="glass glass-hover rounded-xl px-6 py-5 w-72"
-          >
-            <p className="font-medium text-[var(--text-h)]">{c.title}</p>
-            <p className="text-sm text-[var(--text-dim)]">{c.issuer}</p>
-            <p className="font-[var(--mono)] text-xs text-[var(--accent-2)] mt-2">{c.status}</p>
-          </div>
-        ))}
-      />
+      {certifications.length > 2 ? (
+        <Marquee
+          speed={22}
+          items={certifications.map((c) => (
+            <div key={c.title} className="glass glass-hover rounded-xl px-6 py-5 w-72">
+              <p className="font-medium text-[var(--text-h)]">{c.title}</p>
+              <p className="text-sm text-[var(--text-dim)]">{c.issuer}</p>
+              <p className="font-[var(--mono)] text-xs text-[var(--accent-2)] mt-2">{c.status}</p>
+            </div>
+          ))}
+        />
+      ) : (
+        <div className="flex flex-wrap gap-4">
+          {certifications.map((c) => (
+            <div key={c.title} className="glass glass-hover rounded-xl px-6 py-5 w-72">
+              <p className="font-medium text-[var(--text-h)]">{c.title}</p>
+              <p className="text-sm text-[var(--text-dim)]">{c.issuer}</p>
+              <p className="font-[var(--mono)] text-xs text-[var(--accent-2)] mt-2">{c.status}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   )
 }
