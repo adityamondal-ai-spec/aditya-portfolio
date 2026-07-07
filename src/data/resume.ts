@@ -1,0 +1,98 @@
+export const profile = {
+  name: 'Aditya Mondal',
+  role: 'Computer Science Student · AI/ML',
+  location: 'Bengaluru, India',
+  email: 'juug24btech28393@jainuniversity.ac.in',
+  tagline:
+    'Building and shipping machine learning systems — from classical NLP pipelines to cloud-deployed models — while finishing a B.Tech in Computer Science & Engineering (AI & ML).',
+  summary:
+    'Computer Science student specializing in AI/ML, with hands-on experience in Python, TensorFlow, Scikit-learn, and Google Cloud. Currently looking for a summer internship where I can contribute to real ML systems and learn from experienced engineers.',
+}
+
+export const education = {
+  school: 'Jain University, Bengaluru',
+  degree: 'B.Tech in Computer Science & Engineering (AI & ML)',
+  graduation: 'Expected June 2028',
+  cgpa: '7.0 / 10.0',
+}
+
+export const skills = {
+  Languages: ['Python', 'SQL'],
+  'ML / Data': ['TensorFlow', 'Scikit-learn', 'Pandas', 'NumPy'],
+  Tools: ['Google Cloud Platform', 'Git', 'GitHub', 'Jupyter'],
+}
+
+export type Project = {
+  title: string
+  period: string
+  description: string
+  bullets: string[]
+  stack: string[]
+  link?: string
+}
+
+export const projects: Project[] = [
+  {
+    title: 'Sentiment Analysis Model',
+    period: 'Mar 2024 — Present',
+    description:
+      'A machine learning model that classifies product review sentiment (positive / negative / neutral) from raw text.',
+    bullets: [
+      'Built and trained a text classification model using Python and Scikit-learn.',
+      'Trained on a labeled dataset of 10,000+ reviews.',
+      'Reached ~91% accuracy on the held-out test set.',
+    ],
+    stack: ['Python', 'Scikit-learn', 'Pandas', 'NumPy'],
+  },
+]
+
+export type ExperienceItem = {
+  title: string
+  org: string
+  period: string
+  bullets: string[]
+}
+
+export const experience: ExperienceItem[] = [
+  {
+    title: 'Editor Intern',
+    org: 'Student Publication', // TODO: replace with real publication/organization name
+    period: 'Dates pending', // TODO: add real start/end dates
+    bullets: [
+      'Managed the end-to-end content pipeline for a monthly issue.',
+      'Improved article clarity by conducting constructive peer review.',
+      'Coordinated with writers to meet publication deadlines and enhance articles.',
+    ],
+  },
+  {
+    title: 'Volunteer Instructor',
+    org: 'Code for Good',
+    period: 'Jun 2023 — Present',
+    bullets: ['Mentored 15+ high-school students in Python fundamentals.'],
+  },
+]
+
+export type Certification = {
+  title: string
+  issuer: string
+  status: string
+}
+
+export const certifications: Certification[] = [
+  {
+    title: 'Deep Learning Specialization',
+    issuer: 'Coursera',
+    status: 'Completed — Apr 2023',
+  },
+  {
+    title: 'Associate Cloud Engineer',
+    issuer: 'Google Cloud',
+    status: 'In progress', // TODO: original target date (Jun 2024) has passed — confirm current status
+  },
+]
+
+export const links = {
+  // TODO: add real GitHub/LinkedIn usernames when ready
+  github: undefined as string | undefined,
+  linkedin: undefined as string | undefined,
+}
