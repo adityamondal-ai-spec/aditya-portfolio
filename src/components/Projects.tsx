@@ -49,15 +49,28 @@ function TiltCard({ project }: { project: Project }) {
           </li>
         ))}
       </ul>
-      <div className="relative flex flex-wrap gap-2">
-        {project.stack.map((s) => (
-          <span
-            key={s}
-            className="text-xs px-3 py-1 rounded-full border border-[var(--surface-border)] text-[var(--text-dim)]"
+      <div className="relative flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
+          {project.stack.map((s) => (
+            <span
+              key={s}
+              className="text-xs px-3 py-1 rounded-full border border-[var(--surface-border)] text-[var(--text-dim)]"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+        {project.link && (
+          <a
+            href={project.link}
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs font-medium px-3 py-1.5 rounded-full text-white"
+            style={{ background: 'var(--accent-grad)' }}
           >
-            {s}
-          </span>
-        ))}
+            View on GitHub ↗
+          </a>
+        )}
       </div>
     </motion.div>
   )

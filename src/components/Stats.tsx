@@ -2,8 +2,8 @@ import { motion } from 'framer-motion'
 import Counter from './Counter'
 
 const stats = [
-  { value: 91, suffix: '%', label: 'Model accuracy on held-out reviews' },
-  { value: 10000, suffix: '+', label: 'Reviews used to train the sentiment model' },
+  { value: 67, suffix: '%', label: '3-class sentiment accuracy (89.5% binary)' },
+  { value: 15000, suffix: '+', label: 'Reviews used to train the sentiment model' },
   { value: 15, suffix: '+', label: 'Students mentored in Python' },
   { value: 10, suffix: '+', label: 'Tools & technologies in active use' },
 ]

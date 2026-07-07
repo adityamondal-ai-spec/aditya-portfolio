@@ -36,13 +36,14 @@ export const projects: Project[] = [
     title: 'Sentiment Analysis Model',
     period: 'Mar 2024 — Present',
     description:
-      'A machine learning model that classifies product review sentiment (positive / negative / neutral) from raw text.',
+      'A machine learning model that classifies customer review sentiment (positive / negative / neutral) from raw text, trained on real Yelp reviews.',
     bullets: [
-      'Built and trained a text classification model using Python and Scikit-learn.',
-      'Trained on a labeled dataset of 10,000+ reviews.',
-      'Reached ~91% accuracy on the held-out test set.',
+      'Built a TF-IDF + linear SVM text classification pipeline using Python and Scikit-learn.',
+      'Trained on a stratified sample of 15,000 labeled reviews (Yelp Review Full dataset).',
+      'Reached 67.3% accuracy on the full 3-class task (positive/negative/neutral); 89.5% when evaluated as binary positive/negative.',
     ],
     stack: ['Python', 'Scikit-learn', 'Pandas', 'NumPy'],
+    link: 'https://github.com/adityamondal-ai-spec/sentiment-analysis-ml',
   },
 ]
 
@@ -92,7 +93,7 @@ export const certifications: Certification[] = [
 ]
 
 export const links = {
-  // TODO: add real GitHub/LinkedIn usernames when ready
-  github: undefined as string | undefined,
+  github: 'https://github.com/adityamondal-ai-spec' as string | undefined,
+  // TODO: add real LinkedIn URL when ready
   linkedin: undefined as string | undefined,
 }
