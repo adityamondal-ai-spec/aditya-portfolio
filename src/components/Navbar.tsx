@@ -12,12 +12,20 @@ export default function Navbar() {
   const [active, setActive] = useState('')
 
   useEffect(() => {
+    let raf = 0
     function handleScroll() {
-      setScrolled(window.scrollY > 24)
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        setScrolled(window.scrollY > 24)
+      })
     }
     handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
   }, [])
 
   useEffect(() => {

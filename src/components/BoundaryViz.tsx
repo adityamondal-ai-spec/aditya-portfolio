@@ -61,6 +61,9 @@ export default function BoundaryViz() {
   const scrollAmp = useRef(0.05)
   const hovered = useRef<Point | null>(null)
   const rafId = useRef(0)
+  const isVisible = useRef(false)
+  const canvasRect = useRef({ left: 0, top: 0 })
+  const pointerRaf = useRef(0)
   const [tooltip, setTooltip] = useState<{ x: number; y: number; point: Point } | null>(null)
 
   useEffect(() => {
@@ -75,6 +78,7 @@ export default function BoundaryViz() {
       const rect = container!.getBoundingClientRect()
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
       dims.current = { width: rect.width, height: rect.height }
+      canvasRect.current = { left: rect.left, top: rect.top }
       canvas!.width = rect.width * dpr
       canvas!.height = rect.height * dpr
       canvas!.style.width = `${rect.width}px`
@@ -159,9 +163,12 @@ export default function BoundaryViz() {
     }
 
     function handlePointer(clientX: number, clientY: number) {
-      const rect = canvas!.getBoundingClientRect()
-      const px = clientX - rect.left
-      const py = clientY - rect.top
+      // Uses the cached rect from fitCanvas/scroll rather than calling
+      // getBoundingClientRect() here — that call forces a synchronous
+      // layout read, and doing it on every raw mousemove event (which can
+      // fire 100+ times/sec) is a real, measurable source of jank.
+      const px = clientX - canvasRect.current.left
+      const py = clientY - canvasRect.current.top
       const nearest = findNearest(px, py)
       if (nearest !== hovered.current) {
         hovered.current = nearest
@@ -171,7 +178,12 @@ export default function BoundaryViz() {
     }
 
     function handleMouseMove(e: MouseEvent) {
-      handlePointer(e.clientX, e.clientY)
+      if (pointerRaf.current) return
+      const { clientX, clientY } = e
+      pointerRaf.current = requestAnimationFrame(() => {
+        pointerRaf.current = 0
+        handlePointer(clientX, clientY)
+      })
     }
     function handleTouchStart(e: TouchEvent) {
       const t = e.touches[0]
@@ -183,11 +195,20 @@ export default function BoundaryViz() {
       draw()
     }
 
+    // The canvas only ever needs to redraw on scroll while it's actually
+    // on screen — without this gate, every scroll event anywhere on the
+    // page (including deep in the Log or Contact sections, long after
+    // this canvas has scrolled out of view) was still triggering a full
+    // redraw. IntersectionObserver + the tab-visibility check below make
+    // that work disappear entirely once it's not visible.
     let scrollRaf = 0
     function handleScroll() {
+      if (!isVisible.current || document.hidden) return
       if (scrollRaf) return
       scrollRaf = requestAnimationFrame(() => {
         scrollRaf = 0
+        const rect = container!.getBoundingClientRect()
+        canvasRect.current = { left: rect.left, top: rect.top }
         const scrollable = document.documentElement.scrollHeight - window.innerHeight
         const t = scrollable > 0 ? window.scrollY / scrollable : 0
         scrollAmp.current = 0.05 - t * 0.03
@@ -200,11 +221,27 @@ export default function BoundaryViz() {
       draw()
     }
 
+    function handleVisibilityChange() {
+      if (document.hidden && scrollRaf) {
+        cancelAnimationFrame(scrollRaf)
+        scrollRaf = 0
+      }
+    }
+
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        isVisible.current = entries[0]?.isIntersecting ?? false
+      },
+      { threshold: 0 }
+    )
+    intersectionObserver.observe(container)
+
     canvas.addEventListener('mousemove', handleMouseMove)
     canvas.addEventListener('mouseleave', handleMouseLeave)
     canvas.addEventListener('touchstart', handleTouchStart, { passive: true })
     window.addEventListener('scroll', handleScroll, { passive: true })
     window.addEventListener('resize', handleResize)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     if (prefersReducedMotion) {
       progress.current = 1
@@ -213,6 +250,12 @@ export default function BoundaryViz() {
       const start = performance.now()
       const DURATION = 1400
       function tick(now: number) {
+        if (document.hidden) {
+          // Tab is backgrounded mid-entrance — pick back up rather than
+          // burning frames (or the perception of a jump) while hidden.
+          rafId.current = requestAnimationFrame(tick)
+          return
+        }
         progress.current = Math.min(1, (now - start) / DURATION)
         draw()
         if (progress.current < 1) {
@@ -225,11 +268,14 @@ export default function BoundaryViz() {
     return () => {
       cancelAnimationFrame(rafId.current)
       if (scrollRaf) cancelAnimationFrame(scrollRaf)
+      if (pointerRaf.current) cancelAnimationFrame(pointerRaf.current)
+      intersectionObserver.disconnect()
       canvas.removeEventListener('mousemove', handleMouseMove)
       canvas.removeEventListener('mouseleave', handleMouseLeave)
       canvas.removeEventListener('touchstart', handleTouchStart)
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', handleResize)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 
