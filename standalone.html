@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aditya Mondal — AI/ML</title>
+<meta name="description" content="Aditya Mondal — Computer Science student specializing in AI/ML. Projects, experience, and contact." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  :root {
+    /* "Working Paper" palette — these are literally the sentiment
+       classifier's own class colors, not a decorative brand gradient. */
+    --paper: #f7f3ea;
+    --paper-raised: #f1ecdf;
+    --ink: #1c1b17;
+    --ink-dim: #55524a;
+    --line: #d9d2c0;
+    --negative: #a6402f;
+    --neutral: #b8892e;
+    --positive: #1f5c46;
+
+    --display: 'Fraunces', Georgia, serif;
+    --body: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--display);
+    color: var(--ink);
+    margin: 0;
+    font-weight: 500;
+  }
+  ::selection { background: var(--ink); color: var(--paper); }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--paper); }
+  ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ink-dim); }
+
+  /* Setting cursor:none on body alone doesn't stick over links/buttons —
+     browsers apply their own cursor:pointer to <a>/<button> with higher
+     specificity than an inherited value. */
+  .custom-cursor-active, .custom-cursor-active * { cursor: none !important; }
+
+  /* Generic scroll-reveal utility replacing Framer Motion's whileInView —
+     one shared IntersectionObserver drives all of these (see script). */
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .reveal.in-view { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Scroll ink line -->
+<svg id="ink-line" aria-hidden class="fixed left-0 top-0 h-[100dvh] w-6 pointer-events-none z-40" viewBox="0 0 24 1000" preserveAspectRatio="none">
+  <path id="ink-path" fill="none" stroke="var(--neutral)" stroke-width="1.5" stroke-linecap="round" vector-effect="non-scaling-stroke" opacity="0.85" />
+  <g id="ink-marker" opacity="0">
+    <circle r="3.5" fill="var(--neutral)" vector-effect="non-scaling-stroke" />
+    <circle r="3.5" fill="none" stroke="var(--paper)" stroke-width="1" vector-effect="non-scaling-stroke" />
+  </g>
+</svg>
+
+<!-- Custom cursor (desktop only, JS-gated) -->
+<div id="cursor-dot" aria-hidden class="fixed left-0 top-0 z-[100] pointer-events-none opacity-0" style="will-change:transform">
+  <svg id="cursor-svg" width="18" height="22" viewBox="0 0 18 22" style="transform:translate(-9px,-22px) rotate(-12deg); transform-origin:9px 22px">
+    <g id="cursor-group" style="transform-origin:9px 22px; transition:transform 0.15s ease-out">
+      <path d="M9 0 L16 13 Q9 22 9 22 Q9 22 2 13 Z" fill="var(--ink)" stroke="var(--paper)" stroke-width="0.75" />
+      <line x1="9" y1="4" x2="9" y2="17" stroke="var(--paper)" stroke-width="0.6" />
+    </g>
+  </svg>
+</div>
+<div id="cursor-blot" aria-hidden class="fixed left-0 top-0 z-[99] pointer-events-none w-3 h-3 rounded-full opacity-0" style="background:var(--ink); transform:translate(-50%,-50%)"></div>
+
+<!-- Nav -->
+<header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-colors" style="background:transparent; border-bottom:1px solid transparent">
+  <nav class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#top" class="text-lg italic" style="font-family:var(--display); color:var(--ink)">Aditya Mondal</a>
+    <div class="hidden sm:flex gap-6 text-sm" style="font-family:var(--mono)">
+      <a href="#about" class="nav-link pb-0.5 transition-colors" data-target="#about" style="color:var(--ink-dim); border-bottom:1px solid transparent">Introduction</a>
+      <a href="#work" class="nav-link pb-0.5 transition-colors" data-target="#work" style="color:var(--ink-dim); border-bottom:1px solid transparent">Work</a>
+      <a href="#log" class="nav-link pb-0.5 transition-colors" data-target="#log" style="color:var(--ink-dim); border-bottom:1px solid transparent">Log</a>
+      <a href="#contact" class="nav-link pb-0.5 transition-colors" data-target="#contact" style="color:var(--ink-dim); border-bottom:1px solid transparent">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section id="top" class="relative pt-40 pb-24 px-6">
+    <div class="max-w-3xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-12 items-start">
+      <div>
+        <p class="text-xs uppercase tracking-[0.08em]" style="font-family:var(--mono); color:var(--ink-dim)">
+          Bengaluru, India · Computer Science Student · AI/ML
+        </p>
+        <div class="mt-4">
+          <div class="relative">
+            <div id="reveal-clip" style="clip-path:inset(0 0 100% 0)">
+              <h1 class="text-4xl sm:text-5xl italic leading-[1.1]" style="font-weight:500">Sorts language<br />into decisions.</h1>
+            </div>
+            <div id="reveal-roller" aria-hidden class="absolute inset-x-0 top-0 h-14 pointer-events-none" style="transform:translateY(0%)">
+              <svg viewBox="0 0 400 56" preserveAspectRatio="none" class="w-full h-full" aria-hidden>
+                <rect x="0" y="10" width="400" height="20" rx="10" fill="var(--ink)" />
+                <line x1="0" y1="20" x2="400" y2="20" stroke="var(--paper)" stroke-width="1" opacity="0.5" />
+                <circle cx="10" cy="20" r="13" fill="var(--ink)" />
+                <circle cx="390" cy="20" r="13" fill="var(--ink)" />
+                <circle cx="10" cy="20" r="5" fill="var(--paper)" opacity="0.6" />
+                <circle cx="390" cy="20" r="5" fill="var(--paper)" opacity="0.6" />
+                <path d="M0,32 Q10,38 22,33 T46,35 T70,32 T94,36 T118,33 T142,35 T166,32 T190,36 T214,33 T238,35 T262,32 T286,36 T310,33 T334,35 T358,32 T382,36 L400,33 L400,56 L0,56 Z" fill="var(--paper-raised)" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <p class="mt-6 text-base leading-relaxed max-w-md" style="color:var(--ink-dim)">
+          Building and shipping machine learning systems — from classical NLP pipelines to cloud-deployed models — while finishing a B.Tech in Computer Science & Engineering (AI & ML).
+        </p>
+        <div class="mt-8">
+          <a href="#work" class="inline-flex items-center gap-1.5 text-sm font-medium border-b pb-0.5 transition-opacity hover:opacity-70" style="border-color:var(--ink)">
+            Read the work <span aria-hidden>→</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div id="boundary-container" class="relative w-full h-[320px] sm:h-[380px]" style="background:var(--paper-raised); border:1px solid var(--line)">
+          <canvas id="boundary-canvas" class="block w-full h-full"></canvas>
+          <div id="boundary-tooltip" class="absolute pointer-events-none px-3 py-2 text-xs max-w-[200px]" style="display:none; background:var(--paper); border:1px solid var(--line); font-family:var(--mono); color:var(--ink)">
+            <div id="boundary-tooltip-label" class="font-semibold uppercase text-[10px] mb-1"></div>
+            <div id="boundary-tooltip-text"></div>
+          </div>
+        </div>
+        <p class="mt-2 text-[11px]" style="font-family:var(--mono); color:var(--ink-dim)">
+          A live sketch of how the sentiment model separates reviews — hover a point.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="py-10 px-6" style="border-top:1px solid var(--line); border-bottom:1px solid var(--line)">
+    <div class="max-w-3xl mx-auto grid grid-cols-2 sm:grid-cols-4">
+      <div class="reveal py-2 sm:py-0 px-2 sm:px-4">
+        <p class="text-xl sm:text-2xl" style="font-family:var(--mono); color:var(--ink)">n = 15,000</p>
+        <p class="mt-1 text-[11px] leading-snug" style="color:var(--ink-dim)">reviews trained on</p>
+      </div>
+      <div class="reveal py-2 sm:py-0 px-2 sm:px-4" style="transition-delay:60ms">
+        <p class="text-xl sm:text-2xl" style="font-family:var(--mono); color:var(--ink)">0.673</p>
+        <p class="mt-1 text-[11px] leading-snug" style="color:var(--ink-dim)">accuracy — 3-class (pos/neu/neg)</p>
+      </div>
+      <div class="reveal py-2 sm:py-0 px-2 sm:px-4" style="transition-delay:120ms">
+        <p class="text-xl sm:text-2xl" style="font-family:var(--mono); color:var(--ink)">0.895</p>
+        <p class="mt-1 text-[11px] leading-snug" style="color:var(--ink-dim)">accuracy — binary (pos/neg)</p>
+      </div>
+      <div class="reveal py-2 sm:py-0 px-2 sm:px-4" style="transition-delay:180ms">
+        <p class="text-xl sm:text-2xl" style="font-family:var(--mono); color:var(--ink)">n = 2</p>
+        <p class="mt-1 text-[11px] leading-snug" style="color:var(--ink-dim)">projects shipped</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Introduction -->
+  <section id="about" class="py-20 px-6">
+    <div class="max-w-3xl mx-auto grid sm:grid-cols-[1fr_200px] gap-10">
+      <div class="reveal">
+        <p class="text-xs uppercase tracking-[0.08em] mb-4" style="font-family:var(--mono); color:var(--ink-dim)">Introduction</p>
+        <p class="text-lg sm:text-xl leading-relaxed" style="font-family:var(--display); font-weight:400">
+          Computer Science student specializing in AI/ML, with hands-on experience in Python, TensorFlow, Scikit-learn, and Google Cloud. Currently looking for a summer internship where I can contribute to real ML systems and learn from experienced engineers.
+        </p>
+      </div>
+      <div class="reveal sm:pl-6">
+        <div class="sm:border-l pl-0 sm:pl-6" style="border-color:var(--line)">
+          <p class="text-[11px] uppercase tracking-[0.06em] mb-1.5" style="font-family:var(--mono); color:var(--ink-dim)">Education</p>
+          <p class="text-sm font-medium">Jain University, Bengaluru</p>
+          <p class="text-xs mt-0.5" style="color:var(--ink-dim)">B.Tech in Computer Science &amp; Engineering (AI &amp; ML)</p>
+          <p class="text-xs mt-0.5" style="font-family:var(--mono); color:var(--ink-dim)">Expected June 2028</p>
+
+          <p class="text-[11px] uppercase tracking-[0.06em] mb-1.5 mt-6" style="font-family:var(--mono); color:var(--ink-dim)">Skills</p>
+          <div class="mb-2">
+            <p class="text-[11px]" style="color:var(--ink-dim)">Languages</p>
+            <p class="text-xs">Python, SQL</p>
+          </div>
+          <div class="mb-2">
+            <p class="text-[11px]" style="color:var(--ink-dim)">ML / Data</p>
+            <p class="text-xs">TensorFlow, Scikit-learn, Pandas, NumPy</p>
+          </div>
+          <div>
+            <p class="text-[11px]" style="color:var(--ink-dim)">Tools</p>
+            <p class="text-xs">Google Cloud Platform, Git, GitHub, Jupyter</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Studies -->
+  <section id="work" class="py-20 px-6">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs uppercase tracking-[0.08em] mb-8" style="font-family:var(--mono); color:var(--ink-dim)">Case Studies</p>
+      <div class="space-y-14">
+
+        <article class="reveal pt-0">
+          <div class="flex items-start justify-between gap-6 flex-wrap">
+            <div class="flex-1 min-w-[240px]">
+              <div class="flex items-baseline gap-3 flex-wrap">
+                <h3 class="text-2xl" style="font-family:var(--display)">Sentiment Analysis Model</h3>
+                <span class="text-xs" style="font-family:var(--mono); color:var(--ink-dim)">Mar 2024 — Present</span>
+              </div>
+              <p class="mt-3 text-sm leading-relaxed max-w-lg" style="color:var(--ink-dim)">
+                A machine learning model that classifies customer review sentiment (positive / negative / neutral) from raw text, trained on real Yelp reviews.
+              </p>
+              <ul class="mt-4 space-y-1.5">
+                <li class="text-sm leading-relaxed pl-4 relative"><span class="absolute left-0" style="color:var(--ink-dim)">—</span>Built a TF-IDF + linear SVM text classification pipeline using Python and Scikit-learn.</li>
+                <li class="text-sm leading-relaxed pl-4 relative"><span class="absolute left-0" style="color:var(--ink-dim)">—</span>Trained on a stratified sample of 15,000 labeled reviews (Yelp Review Full dataset).</li>
+                <li class="text-sm leading-relaxed pl-4 relative"><span class="absolute left-0" style="color:var(--ink-dim)">—</span>Reached 67.3% accuracy on the full 3-class task (positive/negative/neutral); 89.5% when evaluated as binary positive/negative.</li>
+              </ul>
+              <p class="mt-4 text-xs" style="font-family:var(--mono); color:var(--ink-dim)">Python · Scikit-learn · Pandas · NumPy</p>
+              <p class="mt-3 text-sm">
+                <span style="font-family:var(--mono); color:var(--ink-dim)">[1]</span>
+                <a href="https://github.com/adityamondal-ai-spec/sentiment-analysis-ml" target="_blank" rel="noreferrer" class="border-b hover:opacity-70 transition-opacity" style="border-color:var(--ink)">github.com/adityamondal-ai-spec/sentiment-analysis-ml</a>
+              </p>
+            </div>
+            <div id="mini-thumb-0" class="shrink-0"></div>
+          </div>
+        </article>
+
+        <article class="reveal pt-10" style="border-top:1px solid var(--line); transition-delay:50ms">
+          <div class="flex items-start justify-between gap-6 flex-wrap">
+            <div class="flex-1 min-w-[240px]">
+              <div class="flex items-baseline gap-3 flex-wrap">
+                <h3 class="text-2xl" style="font-family:var(--display)">Interactive 3D Portfolio</h3>
+                <span class="text-xs" style="font-family:var(--mono); color:var(--ink-dim)">Jul 2026 — Present</span>
+              </div>
+              <p class="mt-3 text-sm leading-relaxed max-w-lg" style="color:var(--ink-dim)">
+                This site — a single continuous, scroll-reactive 3D experience, with a real-time particle field and rotating shape tracking the cursor behind every section.
+              </p>
+              <ul class="mt-4 space-y-1.5">
+                <li class="text-sm leading-relaxed pl-4 relative"><span class="absolute left-0" style="color:var(--ink-dim)">—</span>Built with React 19, TypeScript, Vite, Three.js/React Three Fiber, and Framer Motion.</li>
+                <li class="text-sm leading-relaxed pl-4 relative"><span class="absolute left-0" style="color:var(--ink-dim)">—</span>3D background tracks cursor movement on desktop and touch-drag on mobile, with scroll-driven parallax throughout.</li>
+                <li class="text-sm leading-relaxed pl-4 relative"><span class="absolute left-0" style="color:var(--ink-dim)">—</span>Mobile-specific performance tuning: throttled frame rate, reduced particle count, and disabled backdrop blur on small screens.</li>
+              </ul>
+              <p class="mt-4 text-xs" style="font-family:var(--mono); color:var(--ink-dim)">React · TypeScript · Three.js · Framer Motion · Tailwind CSS</p>
+              <p class="mt-3 text-sm">
+                <span style="font-family:var(--mono); color:var(--ink-dim)">[2]</span>
+                <a href="https://github.com/adityamondal-ai-spec/aditya-portfolio" target="_blank" rel="noreferrer" class="border-b hover:opacity-70 transition-opacity" style="border-color:var(--ink)">github.com/adityamondal-ai-spec/aditya-portfolio</a>
+              </p>
+            </div>
+            <div id="mini-thumb-1" class="shrink-0"></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Log -->
+  <section id="log" class="py-20 px-6">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs uppercase tracking-[0.08em] mb-8" style="font-family:var(--mono); color:var(--ink-dim)">Log</p>
+      <div>
+        <div class="reveal grid sm:grid-cols-[180px_1fr] gap-2 sm:gap-8 py-5" style="border-top:1px solid var(--line)">
+          <p class="text-xs pt-0.5" style="font-family:var(--mono); color:var(--ink-dim)">Jun 2023 — Present</p>
+          <div>
+            <p class="text-sm font-semibold">Volunteer Instructor <span class="font-normal" style="color:var(--ink-dim)">· Code for Good</span></p>
+            <ul class="mt-2 space-y-1">
+              <li class="text-sm leading-relaxed pl-4 relative"><span class="absolute left-0" style="color:var(--ink-dim)">—</span>Mentored 15+ high-school students in Python fundamentals.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="reveal grid sm:grid-cols-[180px_1fr] gap-2 sm:gap-8 py-5" style="border-top:1px solid var(--line); transition-delay:50ms">
+          <p class="text-xs pt-0.5" style="font-family:var(--mono); color:var(--ink-dim)">Completed — Apr 2023</p>
+          <div>
+            <p class="text-sm font-semibold">Deep Learning Specialization <span class="font-normal" style="color:var(--ink-dim)">· Coursera</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guess the sentiment -->
+  <section class="py-20 px-6">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs uppercase tracking-[0.08em] mb-3" style="font-family:var(--mono); color:var(--ink-dim)">One more thing</p>
+      <h2 class="text-2xl sm:text-3xl mb-3" style="font-family:var(--display)">Guess the sentiment.</h2>
+      <p class="text-sm mb-8 max-w-md" style="color:var(--ink-dim)">
+        Real review-style snippets, held out the same way a test set is. Guess how each was actually labeled — positive, neutral, or negative.
+      </p>
+      <div class="max-w-lg" style="border:1px solid var(--line); background:var(--paper-raised)">
+        <div class="flex items-center justify-between px-5 pt-4 text-xs" style="font-family:var(--mono); color:var(--ink-dim)">
+          <span id="quiz-progress">1 / 8</span>
+          <span id="quiz-score">score 0</span>
+        </div>
+        <div id="quiz-body" class="px-5 pb-5 pt-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-24 px-6">
+    <div class="reveal max-w-3xl mx-auto">
+      <p class="text-xs uppercase tracking-[0.08em] mb-6" style="font-family:var(--mono); color:var(--ink-dim)">Contact</p>
+      <p class="text-xl sm:text-2xl leading-relaxed max-w-lg" style="font-family:var(--display)">
+        Looking for a summer internship in AI/ML. If you have an opening, or just want to talk about a project — write to me.
+      </p>
+      <p class="mt-6">
+        <a href="mailto:juug24btech28393@jainuniversity.ac.in" class="text-base border-b hover:opacity-70 transition-opacity" style="border-color:var(--ink)">juug24btech28393@jainuniversity.ac.in</a>
+      </p>
+      <div class="flex gap-6 mt-8 text-sm">
+        <a href="https://github.com/adityamondal-ai-spec" class="border-b pb-0.5 hover:opacity-70 transition-opacity" style="border-color:var(--line)">GitHub</a>
+        <a href="https://linkedin.com/in/adityamondal-ai" class="border-b pb-0.5 hover:opacity-70 transition-opacity" style="border-color:var(--line)">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="py-8 px-6 text-center text-xs max-w-3xl mx-auto" style="color:var(--ink-dim); border-top:1px solid var(--line)">
+  <span id="footer-year"></span> Aditya Mondal. Built as a single self-contained HTML file.
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('footer-year').textContent = '© ' + new Date().getFullYear();
+
+  // ---------- Generic scroll-reveal (replaces Framer Motion whileInView) ----------
+  var revealObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.reveal').forEach(function (el) { revealObserver.observe(el); });
+
+  // ---------- Navbar: scroll background + scroll-spy ----------
+  (function () {
+    var navbar = document.getElementById('navbar');
+    var navLinks = document.querySelectorAll('.nav-link');
+    var raf = 0;
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(function () {
+        raf = 0;
+        var scrolled = window.scrollY > 24;
+        navbar.style.background = scrolled ? 'var(--paper)' : 'transparent';
+        navbar.style.borderBottom = scrolled ? '1px solid var(--line)' : '1px solid transparent';
+      });
+    }
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    var sections = ['#about', '#work', '#log', '#contact'].map(function (id) { return document.querySelector(id); }).filter(Boolean);
+    var spyObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          navLinks.forEach(function (l) {
+            var active = l.getAttribute('data-target') === '#' + entry.target.id;
+            l.style.color = active ? 'var(--ink)' : 'var(--ink-dim)';
+            l.style.borderBottom = active ? '1px solid var(--ink)' : '1px solid transparent';
+          });
+        }
+      });
+    }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+    sections.forEach(function (s) { spyObserver.observe(s); });
+  })();
+
+  // ---------- Hero scroll-reveal (unrolling headline) ----------
+  (function () {
+    if (prefersReducedMotion) return;
+    var clipEl = document.getElementById('reveal-clip');
+    var roller = document.getElementById('reveal-roller');
+    if (!clipEl || !roller) return;
+    var DURATION = 1100, DELAY = 150;
+    var start = performance.now() + DELAY;
+    var rafId;
+    function tick(now) {
+      if (document.hidden) { rafId = requestAnimationFrame(tick); return; }
+      var t = Math.min(1, Math.max(0, (now - start) / DURATION));
+      var eased = 1 - Math.pow(1 - t, 3);
+      clipEl.style.clipPath = 'inset(0 0 ' + ((1 - eased) * 100) + '% 0)';
+      roller.style.transform = 'translateY(' + (-eased * 100) + '%)';
+      roller.style.opacity = String(1 - Math.max(0, (t - 0.7) / 0.3));
+      if (t < 1) rafId = requestAnimationFrame(tick);
+    }
+    rafId = requestAnimationFrame(tick);
+  })();
+  if (prefersReducedMotion) {
+    var clipEl0 = document.getElementById('reveal-clip');
+    var roller0 = document.getElementById('reveal-roller');
+    if (clipEl0) clipEl0.style.clipPath = 'none';
+    if (roller0) roller0.style.display = 'none';
+  }
+
+  // ---------- Mini thumbnails (Case Studies) ----------
+  function makeMiniThumb(seed) {
+    var colors = ['#1f5c46', '#b8892e', '#a6402f'];
+    var svg = '<svg width="100" height="60" viewBox="0 0 100 60" aria-hidden>';
+    svg += '<path d="M0,' + (30 + seed * 4) + ' Q50,' + (10 + seed * 6) + ' 100,' + (34 - seed * 3) + '" stroke="rgba(28,27,23,0.3)" stroke-width="1" stroke-dasharray="3,3" fill="none" />';
+    for (var i = 0; i < 14; i++) {
+      var x = 6 + ((i * 37 + seed * 13) % 88);
+      var y = 8 + ((i * 53 + seed * 29) % 44);
+      var c = colors[(i + seed) % 3];
+      svg += '<circle cx="' + x + '" cy="' + y + '" r="2.2" fill="' + c + '" />';
+    }
+    svg += '</svg>';
+    return svg;
+  }
+  var thumb0 = document.getElementById('mini-thumb-0');
+  var thumb1 = document.getElementById('mini-thumb-1');
+  if (thumb0) thumb0.innerHTML = makeMiniThumb(0);
+  if (thumb1) thumb1.innerHTML = makeMiniThumb(1);
+
+  // ---------- Scroll ink line ----------
+  (function () {
+    var path = document.getElementById('ink-path');
+    var marker = document.getElementById('ink-marker');
+    if (!path) return;
+
+    var seed = 7;
+    function rand() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+    var points = [];
+    var steps = 24;
+    for (var i = 0; i <= steps; i++) {
+      var y = (1000 / steps) * i;
+      var wobble = Math.sin(i * 0.9) * 3 + (rand() - 0.5) * 2.5;
+      points.push({ x: 12 + wobble, y: y });
+    }
+    var d = 'M ' + points[0].x + ',' + points[0].y;
+    for (var j = 1; j < points.length; j++) {
+      var prev = points[j - 1], curr = points[j];
+      var midX = (prev.x + curr.x) / 2, midY = (prev.y + curr.y) / 2;
+      d += ' Q ' + prev.x + ',' + prev.y + ' ' + midX + ',' + midY;
+    }
+    var last = points[points.length - 1];
+    d += ' L ' + last.x + ',' + last.y;
+    path.setAttribute('d', d);
+
+    if (prefersReducedMotion) return;
+
+    var length = path.getTotalLength();
+    path.style.strokeDasharray = String(length);
+    path.style.strokeDashoffset = String(length);
+
+    var ticking = false;
+    function update() {
+      ticking = false;
+      if (document.hidden) return;
+      var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      var progress = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+      var drawnLength = length * progress;
+      path.style.strokeDashoffset = String(length - drawnLength);
+      if (marker) {
+        var point = path.getPointAtLength(drawnLength);
+        marker.style.transform = 'translate(' + point.x + 'px, ' + point.y + 'px)';
+        marker.style.opacity = (progress > 0.005 && progress < 0.995) ? '1' : '0';
+      }
+    }
+    function onScroll() { if (ticking) return; ticking = true; requestAnimationFrame(update); }
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) onScroll(); });
+  })();
+
+  // ---------- Custom cursor (desktop only) ----------
+  (function () {
+    var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!fine || prefersReducedMotion) return;
+
+    document.documentElement.classList.add('custom-cursor-active');
+    var REST_ANGLE = -12;
+    var dot = document.getElementById('cursor-dot');
+    var svg = document.getElementById('cursor-svg');
+    var group = document.getElementById('cursor-group');
+    var blot = document.getElementById('cursor-blot');
+
+    var pos = { x: -100, y: -100 }, target = { x: -100, y: -100 };
+    var angle = REST_ANGLE, targetAngle = REST_ANGLE;
+    var rafId = 0, running = false, hoveringInteractive = false;
+
+    function tick() {
+      if (document.hidden) { running = false; return; }
+      var dx = target.x - pos.x, dy = target.y - pos.y;
+      var speed = Math.sqrt(dx * dx + dy * dy);
+      pos.x += dx * 0.18; pos.y += dy * 0.18;
+
+      if (speed > 1.2) targetAngle = Math.atan2(dy, dx) * (180 / Math.PI) - 90;
+      var diff = targetAngle - angle;
+      diff = ((diff + 180) % 360 + 360) % 360 - 180;
+      angle += diff * 0.2;
+
+      dot.style.transform = 'translate3d(' + pos.x + 'px, ' + pos.y + 'px, 0)';
+      svg.style.transform = 'translate(-9px, -22px) rotate(' + angle + 'deg)';
+
+      if (speed < 0.15 && Math.abs(diff) < 0.3) { running = false; return; }
+      rafId = requestAnimationFrame(tick);
+    }
+    function startLoop() { if (running) return; running = true; rafId = requestAnimationFrame(tick); }
+
+    window.addEventListener('mousemove', function (e) {
+      target.x = e.clientX; target.y = e.clientY;
+      dot.style.opacity = '1';
+      startLoop();
+    }, { passive: true });
+
+    window.addEventListener('mouseover', function (e) {
+      var isInteractive = !!e.target.closest('a, button, input, textarea, [role="button"]');
+      if (isInteractive !== hoveringInteractive) {
+        hoveringInteractive = isInteractive;
+        group.style.transform = isInteractive ? 'scale(1.4)' : 'scale(1)';
+      }
+    }, { passive: true });
+
+    window.addEventListener('mousedown', function (e) {
+      blot.style.left = e.clientX + 'px';
+      blot.style.top = e.clientY + 'px';
+      blot.animate([
+        { transform: 'translate(-50%, -50%) scale(0.3)', opacity: 0.5 },
+        { transform: 'translate(-50%, -50%) scale(1.6)', opacity: 0 },
+      ], { duration: 380, easing: 'ease-out' });
+    }, { passive: true });
+
+    document.documentElement.addEventListener('mouseleave', function () { dot.style.opacity = '0'; });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { cancelAnimationFrame(rafId); running = false; }
+      else startLoop();
+    });
+  })();
+
+  // ---------- The Boundary (sentiment decision-boundary scatter) ----------
+  (function () {
+    var container = document.getElementById('boundary-container');
+    var canvas = document.getElementById('boundary-canvas');
+    var tooltip = document.getElementById('boundary-tooltip');
+    var tooltipLabel = document.getElementById('boundary-tooltip-label');
+    var tooltipText = document.getElementById('boundary-tooltip-text');
+    if (!container || !canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    var COLORS = { positive: '#1f5c46', neutral: '#b8892e', negative: '#a6402f' };
+    var SNIPPETS = {
+      positive: ['"Exactly what I was hoping for."', '"Would order again without hesitation."', '"Better than expected, honestly."'],
+      neutral: ['"It was fine. Nothing special."', '"Did the job, no complaints, no praise."', '"Average — matches the price."'],
+      negative: ['"Not worth the money."', '"Wouldn\'t recommend this one."', '"Disappointing given the reviews."']
+    };
+
+    var seed = 42;
+    function rand() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+    var points = [];
+    var bands = [{ cls: 'positive', center: 0.165 }, { cls: 'neutral', center: 0.5 }, { cls: 'negative', center: 0.835 }];
+    bands.forEach(function (band) {
+      for (var i = 0; i < 24; i++) {
+        var x = 0.04 + rand() * 0.92;
+        var noise = (rand() - 0.5) * 0.22;
+        var y = Math.min(0.97, Math.max(0.03, band.center + noise));
+        var snippets = SNIPPETS[band.cls];
+        points.push({ x: x, y: y, cls: band.cls, snippet: snippets[i % snippets.length] });
+      }
+    });
+
+    var dims = { width: 480, height: 380 };
+    var canvasRect = { left: 0, top: 0 };
+    var progress = 0, scrollAmp = 0.05, hovered = null;
+    var rafId = 0, isVisible = false, pointerRaf = 0;
+
+    function fitCanvas() {
+      var rect = container.getBoundingClientRect();
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dims = { width: rect.width, height: rect.height };
+      canvasRect = { left: rect.left, top: rect.top };
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    fitCanvas();
+
+    function curveTop(x) { return 0.33 + scrollAmp * Math.sin(x * Math.PI * 2.6 + 0.4); }
+    function curveBottom(x) { return 0.67 + scrollAmp * Math.sin(x * Math.PI * 2.2 + 1.2); }
+
+    function draw() {
+      var width = dims.width, height = dims.height;
+      ctx.clearRect(0, 0, width, height);
+      ctx.strokeStyle = 'rgba(28,27,23,0.35)';
+      ctx.lineWidth = 1.25;
+      ctx.setLineDash([4, 4]);
+      var revealX = width * Math.min(1, progress * 1.15);
+      [curveTop, curveBottom].forEach(function (curve) {
+        ctx.beginPath();
+        var steps = 60;
+        for (var i = 0; i <= steps; i++) {
+          var xn = i / steps, px = xn * width;
+          if (px > revealX) return;
+          var py = curve(xn) * height;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+
+      var visibleCount = Math.ceil(points.length * Math.min(1, progress * 1.3));
+      for (var i = 0; i < visibleCount; i++) {
+        var p = points[i];
+        var cx = p.x * width, cy = p.y * height;
+        var isHovered = hovered === p;
+        var r = isHovered ? 5.5 : 3.4;
+        var localFade = Math.min(1, (visibleCount - i) / 3);
+        ctx.globalAlpha = prefersReducedMotion ? 1 : localFade;
+        ctx.fillStyle = COLORS[p.cls];
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+        if (isHovered) {
+          ctx.strokeStyle = COLORS[p.cls]; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, Math.PI * 2); ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function findNearest(px, py) {
+      var best = null, bestDist = Infinity;
+      points.forEach(function (p) {
+        var dx = p.x * dims.width - px, dy = p.y * dims.height - py;
+        var d = dx * dx + dy * dy;
+        if (d < bestDist) { bestDist = d; best = p; }
+      });
+      return bestDist < 900 ? best : null;
+    }
+
+    function handlePointer(clientX, clientY) {
+      var px = clientX - canvasRect.left, py = clientY - canvasRect.top;
+      var nearest = findNearest(px, py);
+      if (nearest !== hovered) {
+        hovered = nearest;
+        draw();
+        if (nearest) {
+          tooltip.style.display = 'block';
+          tooltip.style.left = Math.min(px + 12, dims.width - 210) + 'px';
+          tooltip.style.top = Math.max(py - 46, 8) + 'px';
+          tooltipLabel.textContent = nearest.cls;
+          tooltipLabel.style.color = COLORS[nearest.cls];
+          tooltipText.textContent = nearest.snippet;
+        } else {
+          tooltip.style.display = 'none';
+        }
+      }
+    }
+
+    canvas.addEventListener('mousemove', function (e) {
+      if (pointerRaf) return;
+      var clientX = e.clientX, clientY = e.clientY;
+      pointerRaf = requestAnimationFrame(function () { pointerRaf = 0; handlePointer(clientX, clientY); });
+    });
+    canvas.addEventListener('touchstart', function (e) {
+      var t = e.touches[0];
+      if (t) handlePointer(t.clientX, t.clientY);
+    }, { passive: true });
+    canvas.addEventListener('mouseleave', function () { hovered = null; tooltip.style.display = 'none'; draw(); });
+
+    var scrollRaf = 0;
+    function handleScroll() {
+      if (!isVisible || document.hidden) return;
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(function () {
+        scrollRaf = 0;
+        var rect = container.getBoundingClientRect();
+        canvasRect = { left: rect.left, top: rect.top };
+        var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        var t = scrollable > 0 ? window.scrollY / scrollable : 0;
+        scrollAmp = 0.05 - t * 0.03;
+        draw();
+      });
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', function () { fitCanvas(); draw(); });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden && scrollRaf) { cancelAnimationFrame(scrollRaf); scrollRaf = 0; }
+    });
+
+    new IntersectionObserver(function (entries) {
+      isVisible = entries[0] ? entries[0].isIntersecting : false;
+    }, { threshold: 0 }).observe(container);
+
+    if (prefersReducedMotion) {
+      progress = 1;
+      draw();
+    } else {
+      var start = performance.now(), DURATION = 1400;
+      function entranceTick(now) {
+        if (document.hidden) { rafId = requestAnimationFrame(entranceTick); return; }
+        progress = Math.min(1, (now - start) / DURATION);
+        draw();
+        if (progress < 1) rafId = requestAnimationFrame(entranceTick);
+      }
+      rafId = requestAnimationFrame(entranceTick);
+    }
+  })();
+
+  // ---------- Guess the sentiment quiz ----------
+  (function () {
+    var ITEMS = [
+      { text: 'Absolutely loved this place, the staff were incredible and the food was perfect.', label: 'positive' },
+      { text: 'Terrible experience, will never come back. Rude staff and cold food.', label: 'negative' },
+      { text: 'It was fine. Nothing special, but nothing wrong with it either.', label: 'neutral' },
+      { text: 'The product broke after two days. Complete waste of money.', label: 'negative' },
+      { text: 'Pretty good overall, though the price is a bit high for what you get.', label: 'neutral' },
+      { text: 'Exceeded every expectation — will be recommending this to everyone I know.', label: 'positive' },
+      { text: 'Average at best. Not bad, just forgettable.', label: 'neutral' },
+      { text: 'Worst customer service I have dealt with all year.', label: 'negative' }
+    ];
+    var OPTIONS = [{ label: 'positive', display: 'Positive' }, { label: 'neutral', display: 'Neutral' }, { label: 'negative', display: 'Negative' }];
+    var COLORS = { positive: 'var(--positive)', neutral: 'var(--neutral)', negative: 'var(--negative)' };
+
+    var body = document.getElementById('quiz-body');
+    var progressEl = document.getElementById('quiz-progress');
+    var scoreEl = document.getElementById('quiz-score');
+    if (!body) return;
+
+    var state = { index: 0, score: 0, answered: null, done: false };
+
+    function render() {
+      progressEl.textContent = (state.index + 1) + ' / ' + ITEMS.length;
+      scoreEl.textContent = 'score ' + state.score;
+
+      if (state.done) {
+        body.innerHTML =
+          '<p class="text-lg" style="font-family:var(--display)">' + state.score + ' / ' + ITEMS.length + ' correct.</p>' +
+          '<button id="quiz-restart" class="mt-3 text-sm border-b pb-0.5 hover:opacity-70 transition-opacity" style="border-color:var(--ink)">Try again →</button>';
+        document.getElementById('quiz-restart').addEventListener('click', function () {
+          state = { index: 0, score: 0, answered: null, done: false };
+          render();
+        });
+        return;
+      }
+
+      var current = ITEMS[state.index];
+      var html = '<p class="text-base leading-relaxed" style="font-family:var(--display); min-height:72px">“' + current.text + '”</p>';
+      html += '<div class="flex gap-2 mt-4 flex-wrap">';
+      OPTIONS.forEach(function (opt) {
+        var isChosen = state.answered === opt.label;
+        var isCorrectAnswer = state.answered && opt.label === current.label;
+        var border = state.answered ? (isCorrectAnswer ? COLORS[opt.label] : 'var(--line)') : 'var(--ink)';
+        var color = isCorrectAnswer ? COLORS[opt.label] : (isChosen ? 'var(--ink-dim)' : 'var(--ink)');
+        html += '<button data-choice="' + opt.label + '" ' + (state.answered ? 'disabled' : '') +
+          ' class="quiz-choice px-3.5 py-1.5 text-sm transition-colors" style="border:1px solid ' + border + '; color:' + color + '; background:transparent; cursor:' + (state.answered ? 'default' : 'pointer') + '">' +
+          opt.display + '</button>';
+      });
+      html += '</div>';
+      if (state.answered) {
+        var correct = state.answered === current.label;
+        html += '<div class="mt-4 flex items-center justify-between">' +
+          '<p class="text-sm" style="color:' + (correct ? 'var(--positive)' : 'var(--negative)') + '">' + (correct ? 'Correct' : 'Actually: ' + current.label) + '</p>' +
+          '<button id="quiz-next" class="text-sm border-b pb-0.5 hover:opacity-70 transition-opacity" style="border-color:var(--ink)">' + (state.index + 1 >= ITEMS.length ? 'See score' : 'Next') + ' →</button>' +
+          '</div>';
+      }
+      body.innerHTML = html;
+
+      document.querySelectorAll('.quiz-choice').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (state.answered) return;
+          var choice = btn.getAttribute('data-choice');
+          state.answered = choice;
+          if (choice === current.label) state.score += 1;
+          render();
+        });
+      });
+      var nextBtn = document.getElementById('quiz-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+          if (state.index + 1 >= ITEMS.length) { state.done = true; }
+          else { state.index += 1; state.answered = null; }
+          render();
+        });
+      }
+    }
+    render();
+  })();
+})();
+</script>
+</body>
+</html>
