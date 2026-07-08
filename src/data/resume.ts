@@ -91,6 +91,5 @@ export const certifications: Certification[] = [
 
 export const links = {
   github: 'https://github.com/adityamondal-ai-spec' as string | undefined,
-  // TODO: add real LinkedIn URL when ready
-  linkedin: undefined as string | undefined,
+  linkedin: 'https://linkedin.com/in/adityamondal-ai' as string | undefined,
 }
