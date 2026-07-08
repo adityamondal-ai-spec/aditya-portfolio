@@ -9,10 +9,12 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ScrollInkLine from './components/ScrollInkLine'
 import CustomCursor from './components/CustomCursor'
+import HeroFlow from './components/HeroFlow'
 
 function App() {
   return (
     <div>
+      <HeroFlow />
       <ScrollInkLine />
       <CustomCursor />
       <Navbar />
