@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { profile } from '../data/resume'
 import BoundaryViz from './BoundaryViz'
+import ScrollReveal from './ScrollReveal'
 
 export default function Hero() {
   const reduceMotion = useReducedMotion()
@@ -20,13 +21,13 @@ export default function Hero() {
           >
             {profile.location} · {profile.role}
           </motion.p>
-          <motion.h1
-            {...fadeUp(0.08)}
-            className="mt-4 text-4xl sm:text-5xl italic leading-[1.1]"
-            style={{ fontWeight: 500 }}
-          >
-            Sorts language<br />into decisions.
-          </motion.h1>
+          <div className="mt-4">
+            <ScrollReveal>
+              <h1 className="text-4xl sm:text-5xl italic leading-[1.1]" style={{ fontWeight: 500 }}>
+                Sorts language<br />into decisions.
+              </h1>
+            </ScrollReveal>
+          </div>
           <motion.p
             {...fadeUp(0.16)}
             className="mt-6 text-base leading-relaxed max-w-md"
