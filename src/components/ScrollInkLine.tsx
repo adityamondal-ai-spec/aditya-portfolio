@@ -34,6 +34,7 @@ const PATH_D = buildInkPath()
 
 export default function ScrollInkLine() {
   const pathRef = useRef<SVGPathElement>(null)
+  const markerRef = useRef<SVGGElement>(null)
   const lengthRef = useRef(0)
   const rafId = useRef(0)
 
@@ -57,7 +58,17 @@ export default function ScrollInkLine() {
       if (document.hidden) return
       const scrollable = document.documentElement.scrollHeight - window.innerHeight
       const progress = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0
-      path!.style.strokeDashoffset = `${lengthRef.current * (1 - progress)}`
+      const drawnLength = lengthRef.current * progress
+      path!.style.strokeDashoffset = `${lengthRef.current - drawnLength}`
+
+      // A small marker sitting right at the leading edge of the ink —
+      // like the nib of a quill, or the roller of a scroll being unwound,
+      // rather than a plain growing bar.
+      if (markerRef.current) {
+        const point = path!.getPointAtLength(drawnLength)
+        markerRef.current.style.transform = `translate(${point.x}px, ${point.y}px)`
+        markerRef.current.style.opacity = progress > 0.005 && progress < 0.995 ? '1' : '0'
+      }
     }
 
     function handleScroll() {
@@ -94,11 +105,18 @@ export default function ScrollInkLine() {
         ref={pathRef}
         d={PATH_D}
         fill="none"
-        stroke="var(--ink-dim)"
+        stroke="var(--neutral)"
         strokeWidth="1.5"
         strokeLinecap="round"
         vectorEffect="non-scaling-stroke"
+        opacity="0.85"
       />
+      {/* Leading marker — like a quill tip or a scroll's roller, sitting
+          right where the ink currently ends. */}
+      <g ref={markerRef} opacity="0">
+        <circle r="3.5" fill="var(--neutral)" vectorEffect="non-scaling-stroke" />
+        <circle r="3.5" fill="none" stroke="var(--paper)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+      </g>
     </svg>
   )
 }
