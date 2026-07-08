@@ -1,39 +1,27 @@
-# Interactive 3D Portfolio
+# Aditya Mondal — Portfolio
 
 **Live:** https://aditya-portfolio-dusky-seven.vercel.app
 
-A personal portfolio site built as a single continuous, scroll-reactive experience — a real-time 3D particle field and rotating shape sit behind every section (not just the hero), tracking cursor movement on desktop and touch-drag on mobile, with parallax driven by scroll position.
+## What's actually deployed
 
-## Features
+The live site is `static/index.html` — a single, self-contained, **hand-built vanilla HTML/CSS/JavaScript** page (no framework, no build step). Deployment is configured via `vercel.json`, which points Vercel at `static/` as the output directory and skips the build step entirely.
 
-- **3D background** — a Three.js/React Three Fiber scene (star field + rotating knot geometry) mounted once and fixed behind the entire page, so there's no hard seam between sections
-- **Cursor & touch interactivity** — the 3D scene eases toward the mouse on desktop and toward touch-drag on mobile, purely passive (no click required)
-- **Scroll-driven animations** — scroll progress bar, parallax hero text, scroll-triggered reveals, animated stat counters, an active-section navbar, and a magnetic-hover button effect, all via Framer Motion
-- **Mini-game** — a lightweight canvas-based "tap to jump" endless runner (Chrome-dino-style mechanic) tucked in at the end of the page
-- **Mobile-specific performance tuning** — reduced particle count, throttled frame rate, lower-poly 3D geometry, and disabled backdrop blur on small screens, since blurring an animated layer is one of the most expensive things a phone GPU can do
-- **`prefers-reduced-motion` support** — animations are shortened/disabled site-wide when the user's OS setting requests it
+Features: a canvas-based constellation/particle background, a live in-browser sentiment classifier demo you can type into, a magnetic cursor that pulls toward links, a scroll-progress bar, and scroll-triggered reveals — all vanilla JS, no dependencies.
 
-## Tech Stack
+### Running it locally
 
-- **React 19** + **TypeScript**
-- **Vite** — build tool & dev server
-- **Three.js** + **React Three Fiber** + **drei** — 3D scene
-- **Framer Motion** — animation
-- **Tailwind CSS v4** — styling (CSS-first config via `@tailwindcss/vite`, no `tailwind.config.js`)
-
-Pure client-side rendering (CSR) — no backend, no SSR/SSG, deployed as a static build.
-
-## Running locally
+It's a static file — just open it, or serve the `static/` folder with anything:
 
 ```bash
-npm install
-npm run dev
+npx serve static
 ```
 
-Then open the printed local URL (typically `http://localhost:5173`).
+## `src/` — an undeployed React app
 
-To build for production:
+The `src/` directory contains a separate, complete **React 19 + TypeScript + Vite** implementation of this portfolio (the "Working Paper" design: a paper/ink editorial aesthetic with a canvas decision-boundary visualization, a scroll-drawn ink line, and a spring-eased custom cursor). It builds and runs correctly (`npm install && npm run dev`), but **it is not what's currently live** — the production deploy was switched to the static bundle above. It's kept in the repo in case work resumes on it; switching back means removing `vercel.json` (or pointing it at the Vite build output instead of `static/`).
 
-```bash
-npm run build
-```
+## Other files
+
+- `standalone.html` — a single-file, no-build export of the React app's design, for portability/sharing.
+- `DESIGN_PROMPT.md` — a design-system brief for the React app's "Working Paper" aesthetic.
+- `site-review/` — screenshots and notes from a visual audit of the live static site.
