@@ -1,30 +1,37 @@
-import { motion } from 'framer-motion'
-import Counter from './Counter'
+import { motion, useReducedMotion } from 'framer-motion'
 
-const stats = [
-  { value: 89, suffix: '%', label: 'Binary sentiment accuracy (67.3% 3-class)' },
-  { value: 15000, suffix: '+', label: 'Reviews used to train the sentiment model' },
-  { value: 2, suffix: '', label: 'Projects shipped' },
-  { value: 15, suffix: '+', label: 'Students mentored in Python' },
+const metrics = [
+  { label: 'reviews trained on', value: 'n = 15,000' },
+  { label: 'accuracy — 3-class (pos/neu/neg)', value: '0.673' },
+  { label: 'accuracy — binary (pos/neg)', value: '0.895' },
+  { label: 'projects shipped', value: 'n = 2' },
 ]
 
 export default function Stats() {
+  const reduceMotion = useReducedMotion()
+
   return (
-    <section className="relative py-16 px-6 max-w-5xl mx-auto">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4">
-        {stats.map((s, i) => (
+    <section
+      className="py-10 px-6"
+      style={{ borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}
+    >
+      <div className="max-w-3xl mx-auto grid grid-cols-2 sm:grid-cols-4">
+        {metrics.map((m, i) => (
           <motion.div
-            key={s.label}
-            initial={{ opacity: 0, y: 20 }}
+            key={m.label}
+            initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: i * 0.08 }}
-            className="text-center sm:text-left"
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.4, delay: reduceMotion ? 0 : i * 0.06 }}
+            className="py-2 sm:py-0 px-2 sm:px-4 first:pl-0"
+            style={{ borderLeft: i === 0 ? 'none' : undefined }}
           >
-            <p className="text-4xl sm:text-5xl font-semibold gradient-text font-[var(--heading)]">
-              <Counter value={s.value} suffix={s.suffix} />
+            <p className="font-[var(--mono)] text-xl sm:text-2xl" style={{ color: 'var(--ink)' }}>
+              {m.value}
             </p>
-            <p className="mt-2 text-xs sm:text-sm text-[var(--text-dim)] leading-snug">{s.label}</p>
+            <p className="mt-1 text-[11px] leading-snug" style={{ color: 'var(--ink-dim)' }}>
+              {m.label}
+            </p>
           </motion.div>
         ))}
       </div>

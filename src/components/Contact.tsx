@@ -1,42 +1,46 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { profile, links } from '../data/resume'
-import MagneticButton from './MagneticButton'
 
 export default function Contact() {
-  return (
-    <section id="contact" className="relative py-32 px-6 max-w-3xl mx-auto text-center overflow-hidden">
-      <div className="blob w-[400px] h-[400px] bg-[#7c5cff] opacity-[0.12] top-0 left-1/2 -translate-x-1/2" />
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.6 }}
-        className="relative"
-      >
-        <p className="font-[var(--mono)] text-sm text-[var(--accent-2)] mb-3">04 — Contact</p>
-        <h2 className="text-3xl sm:text-4xl font-semibold mb-6">Let's build something.</h2>
-        <p className="text-[var(--text-dim)] text-lg mb-10 max-w-xl mx-auto">
-          Looking for a summer internship in AI/ML. If you have an opening or just want to talk
-          about a project, reach out.
-        </p>
-        <MagneticButton
-          href={`mailto:${profile.email}`}
-          className="inline-block px-8 py-3 rounded-full text-white font-medium"
-          style={{ background: 'var(--accent-grad)' }}
-        >
-          {profile.email}
-        </MagneticButton>
+  const reduceMotion = useReducedMotion()
+  const fade = reduceMotion
+    ? { initial: { opacity: 1 }, whileInView: { opacity: 1 }, transition: { duration: 0 } }
+    : { initial: { opacity: 0, y: 14 }, whileInView: { opacity: 1, y: 0 }, transition: { duration: 0.5 } }
 
-        <div className="flex justify-center gap-6 mt-10 text-sm text-[var(--text-dim)]">
+  return (
+    <section id="contact" className="py-24 px-6">
+      <motion.div {...fade} viewport={{ once: true, amount: 0.5 }} className="max-w-3xl mx-auto">
+        <p className="font-[var(--mono)] text-xs uppercase tracking-[0.08em] mb-6" style={{ color: 'var(--ink-dim)' }}>
+          Contact
+        </p>
+        <p className="text-xl sm:text-2xl leading-relaxed max-w-lg" style={{ fontFamily: 'var(--display)' }}>
+          Looking for a summer internship in AI/ML. If you have an opening, or just want to talk
+          about a project — write to me.
+        </p>
+        <p className="mt-6">
+          <a
+            href={`mailto:${profile.email}`}
+            className="text-base border-b hover:opacity-70 transition-opacity"
+            style={{ borderColor: 'var(--ink)' }}
+          >
+            {profile.email}
+          </a>
+        </p>
+
+        <div className="flex gap-6 mt-8 text-sm">
           {links.github ? (
-            <a href={links.github} className="hover:text-[var(--text-h)]">GitHub</a>
+            <a href={links.github} className="border-b pb-0.5 hover:opacity-70 transition-opacity" style={{ borderColor: 'var(--line)' }}>
+              GitHub
+            </a>
           ) : (
-            <span className="opacity-40 cursor-not-allowed">GitHub (coming soon)</span>
+            <span style={{ color: 'var(--ink-dim)', opacity: 0.5 }}>GitHub (coming soon)</span>
           )}
           {links.linkedin ? (
-            <a href={links.linkedin} className="hover:text-[var(--text-h)]">LinkedIn</a>
+            <a href={links.linkedin} className="border-b pb-0.5 hover:opacity-70 transition-opacity" style={{ borderColor: 'var(--line)' }}>
+              LinkedIn
+            </a>
           ) : (
-            <span className="opacity-40 cursor-not-allowed">LinkedIn (coming soon)</span>
+            <span style={{ color: 'var(--ink-dim)', opacity: 0.5 }}>LinkedIn (coming soon)</span>
           )}
         </div>
       </motion.div>

@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 
 const links = [
-  { label: 'About', href: '#about' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
+  { label: 'Introduction', href: '#about' },
+  { label: 'Work', href: '#work' },
+  { label: 'Log', href: '#log' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -42,47 +41,37 @@ export default function Navbar() {
   }, [])
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 flex justify-center px-4 pt-4">
-      <motion.nav
-        animate={{
-          maxWidth: scrolled ? 640 : 896,
-          paddingTop: scrolled ? 8 : 12,
-          paddingBottom: scrolled ? 8 : 12,
-        }}
-        transition={{ duration: 0.35, ease: 'easeOut' }}
-        className="glass w-full rounded-full px-6 flex items-center justify-between"
-      >
-        <a href="#top" className="font-[var(--heading)] text-sm tracking-wide text-[var(--text-h)]">
-          AM<span className="text-[var(--accent)]">.</span>
+    <header
+      className="fixed top-0 inset-x-0 z-50 transition-colors"
+      style={{
+        background: scrolled ? 'var(--paper)' : 'transparent',
+        borderBottom: scrolled ? '1px solid var(--line)' : '1px solid transparent',
+      }}
+    >
+      <nav className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a
+          href="#top"
+          className="font-[var(--display)] text-lg italic"
+          style={{ color: 'var(--ink)' }}
+        >
+          Aditya Mondal
         </a>
-        <div className="hidden sm:flex gap-6 text-sm text-[var(--text-dim)]">
+        <div className="hidden sm:flex gap-6 text-sm font-[var(--mono)]">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              className={`relative transition-colors ${
-                active === l.href ? 'text-[var(--text-h)]' : 'hover:text-[var(--text-h)]'
-              }`}
+              style={{
+                color: active === l.href ? 'var(--ink)' : 'var(--ink-dim)',
+                borderBottom: active === l.href ? '1px solid var(--ink)' : '1px solid transparent',
+              }}
+              className="pb-0.5 transition-colors hover:text-[var(--ink)]"
             >
               {l.label}
-              {active === l.href && (
-                <motion.span
-                  layoutId="nav-active"
-                  className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full"
-                  style={{ background: 'var(--accent-grad)' }}
-                />
-              )}
             </a>
           ))}
         </div>
-        <a
-          href="#contact"
-          className="text-sm px-4 py-1.5 rounded-full text-white font-medium"
-          style={{ background: 'var(--accent-grad)' }}
-        >
-          Let's talk
-        </a>
-      </motion.nav>
+      </nav>
     </header>
   )
 }

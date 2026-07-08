@@ -1,84 +1,56 @@
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { profile } from '../data/resume'
-import MagneticButton from './MagneticButton'
+import BoundaryViz from './BoundaryViz'
 
 export default function Hero() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end start'],
-  })
-
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -80])
-  const textOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
+  const reduceMotion = useReducedMotion()
+  const fadeUp = (delay: number) =>
+    reduceMotion
+      ? { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0 } }
+      : { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, delay } }
 
   return (
-    <section
-      ref={sectionRef}
-      id="top"
-      className="relative min-h-[100svh] flex items-center overflow-hidden pt-24"
-    >
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center pointer-events-none">
-        <motion.div
-          style={{ y: textY, opacity: textOpacity }}
-          className="text-center lg:text-left order-2 lg:order-1 pointer-events-auto"
-        >
+    <section id="top" className="relative pt-40 pb-24 px-6">
+      <div className="max-w-3xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-12 items-start">
+        <div>
           <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="font-[var(--mono)] text-sm text-[var(--accent-2)] tracking-widest uppercase mb-4"
+            {...fadeUp(0)}
+            className="font-[var(--mono)] text-xs uppercase tracking-[0.08em]"
+            style={{ color: 'var(--ink-dim)' }}
           >
-            {profile.location}
+            {profile.location} · {profile.role}
           </motion.p>
           <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-6xl font-semibold tracking-tight"
+            {...fadeUp(0.08)}
+            className="mt-4 text-4xl sm:text-5xl italic leading-[1.1]"
+            style={{ fontWeight: 500 }}
           >
-            {profile.name}
+            Sorts language<br />into decisions.
           </motion.h1>
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="mt-4 text-lg sm:text-xl gradient-text font-medium"
-          >
-            {profile.role}
-          </motion.h2>
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="mt-6 text-base sm:text-lg text-[var(--text-dim)] leading-relaxed max-w-lg mx-auto lg:mx-0"
+            {...fadeUp(0.16)}
+            className="mt-6 text-base leading-relaxed max-w-md"
+            style={{ color: 'var(--ink-dim)' }}
           >
             {profile.tagline}
           </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="mt-10 flex items-center justify-center lg:justify-start gap-4"
-          >
-            <MagneticButton
-              href="#projects"
-              className="px-6 py-3 rounded-full text-white font-medium text-sm inline-block"
-              style={{ background: 'var(--accent-grad)' }}
+          <motion.div {...fadeUp(0.24)} className="mt-8">
+            <a
+              href="#work"
+              className="inline-flex items-center gap-1.5 text-sm font-medium border-b pb-0.5 transition-opacity hover:opacity-70"
+              style={{ borderColor: 'var(--ink)' }}
             >
-              View Projects
-            </MagneticButton>
-            <MagneticButton
-              href="#contact"
-              className="px-6 py-3 rounded-full glass text-sm font-medium text-[var(--text-h)] inline-block"
-            >
-              Get in touch
-            </MagneticButton>
+              Read the work <span aria-hidden>→</span>
+            </a>
           </motion.div>
-        </motion.div>
+        </div>
 
-        <div className="order-1 lg:order-2" aria-hidden />
+        <motion.div {...fadeUp(0.1)}>
+          <BoundaryViz />
+          <p className="mt-2 text-[11px] font-[var(--mono)]" style={{ color: 'var(--ink-dim)' }}>
+            A live sketch of how the sentiment model separates reviews — hover a point.
+          </p>
+        </motion.div>
       </div>
     </section>
   )
