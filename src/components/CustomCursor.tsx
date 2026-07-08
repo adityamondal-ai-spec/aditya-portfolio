@@ -17,8 +17,10 @@ export default function CustomCursor() {
   useEffect(() => {
     if (!enabled) return
 
-    const prevCursor = document.body.style.cursor
-    document.body.style.cursor = 'none'
+    // Plain body.style.cursor doesn't stick over links/buttons — browsers
+    // apply their own cursor to <a>/<button>, which wins over an inherited
+    // value. The class below carries a universal !important override.
+    document.documentElement.classList.add('custom-cursor-active')
 
     function tick() {
       if (document.hidden) {
@@ -75,7 +77,7 @@ export default function CustomCursor() {
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      document.body.style.cursor = prevCursor
+      document.documentElement.classList.remove('custom-cursor-active')
       cancelAnimationFrame(rafId.current)
       window.removeEventListener('mousemove', handleMouseMove)
       document.documentElement.removeEventListener('mouseleave', handleMouseLeaveWindow)
@@ -92,7 +94,15 @@ export default function CustomCursor() {
       className="fixed left-0 top-0 z-[100] pointer-events-none opacity-0"
       style={{ willChange: 'transform' }}
     >
-      <svg width="18" height="22" viewBox="0 0 18 22" style={{ transform: 'translate(-4px, -3px) rotate(-15deg)' }}>
+      {/* The nib's tip (9,22) is the meaningful hotspot — it needs to land
+          exactly on the real cursor position, not just somewhere near it,
+          or the whole thing reads as disconnected from the actual pointer. */}
+      <svg
+        width="18"
+        height="22"
+        viewBox="0 0 18 22"
+        style={{ transform: 'translate(-9px, -22px) rotate(-12deg)', transformOrigin: '9px 22px' }}
+      >
         <path d="M9 0 L16 13 Q9 22 9 22 Q9 22 2 13 Z" fill="var(--ink)" stroke="var(--paper)" strokeWidth="0.75" />
         <line x1="9" y1="4" x2="9" y2="17" stroke="var(--paper)" strokeWidth="0.6" />
       </svg>

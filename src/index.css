@@ -61,6 +61,16 @@ h1, h2, h3, h4 {
   background: var(--ink-dim);
 }
 
+/* Setting cursor:none on body alone doesn't stick over links/buttons —
+   browsers apply their own cursor:pointer to <a>/<button> with higher
+   specificity than an inherited value, so the native cursor "leaks
+   through" over every interactive element on the page. The !important
+   universal selector is the only way to actually suppress it everywhere. */
+.custom-cursor-active,
+.custom-cursor-active * {
+  cursor: none !important;
+}
+
 .rule {
   border: none;
   border-top: 1px solid var(--line);
