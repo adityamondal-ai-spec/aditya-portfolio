@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { profile } from '../data/resume'
-import BoundaryViz from './BoundaryViz'
+import Boundary from './Boundary'
 import ScrollReveal from './ScrollReveal'
 
 export default function Hero() {
@@ -47,9 +47,9 @@ export default function Hero() {
         </div>
 
         <motion.div {...fadeUp(0.1)}>
-          <BoundaryViz />
+          <Boundary />
           <p className="mt-2 text-[11px] font-[var(--mono)]" style={{ color: 'var(--ink-dim)' }}>
-            A live sketch of how the sentiment model separates reviews — hover a point.
+            Real reviews from the model's held-out test set, positioned by its actual decision output — hover a point.
           </p>
         </motion.div>
       </div>

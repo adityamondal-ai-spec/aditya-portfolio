@@ -1,11 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
-
-const metrics = [
-  { label: 'reviews trained on', value: 'n = 15,000' },
-  { label: 'accuracy — 3-class (pos/neu/neg)', value: '0.673' },
-  { label: 'accuracy — binary (pos/neg)', value: '0.895' },
-  { label: 'projects shipped', value: 'n = 2' },
-]
+import { metrics } from '../data/resume'
 
 export default function Stats() {
   const reduceMotion = useReducedMotion()

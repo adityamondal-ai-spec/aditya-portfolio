@@ -21,6 +21,13 @@ export const skills = {
   Tools: ['Google Cloud Platform', 'Git', 'GitHub', 'Jupyter'],
 }
 
+export const metrics = [
+  { label: 'reviews trained on', value: 'n = 15,000' },
+  { label: 'accuracy — 3-class (pos/neu/neg)', value: '0.673' },
+  { label: 'accuracy — binary (pos/neg)', value: '0.895' },
+  { label: 'projects shipped', value: 'n = 2' },
+]
+
 export type Project = {
   title: string
   period: string
@@ -45,14 +52,14 @@ export const projects: Project[] = [
     link: 'https://github.com/adityamondal-ai-spec/sentiment-analysis-ml',
   },
   {
-    title: 'Interactive 3D Portfolio',
+    title: 'Interactive Portfolio',
     period: 'Jul 2026 — Present',
     description:
-      'This site — a single continuous, scroll-reactive 3D experience, with a real-time particle field and rotating shape tracking the cursor behind every section.',
+      'This site — an editorial "Working Paper" design whose signature element, The Boundary, is built from the sentiment model above: real held-out test reviews positioned by the model\'s actual decision geometry, not illustrative data.',
     bullets: [
-      'Built with React 19, TypeScript, Vite, Three.js/React Three Fiber, and Framer Motion.',
-      '3D background tracks cursor movement on desktop and touch-drag on mobile, with scroll-driven parallax throughout.',
-      'Mobile-specific performance tuning: throttled frame rate, reduced particle count, and disabled backdrop blur on small screens.',
+      'The Boundary plots ~3,000 real reviews by the SVM\'s real decision_function output, colored by true label — rotate it and the neutral class visibly blurs into the boundary, matching the model\'s own confusion matrix.',
+      'Ships 2D by default (fast, always real); an opt-in "Enter 3D" mode lazy-loads React Three Fiber only on click, so the WebGL cost is zero unless requested — verified with real Lighthouse runs, not assumed.',
+      'Built with React 19, TypeScript, Vite, Tailwind CSS, and Framer Motion, with Three.js/React Three Fiber for the optional 3D mode.',
     ],
     stack: ['React', 'TypeScript', 'Three.js', 'Framer Motion', 'Tailwind CSS'],
     link: 'https://github.com/adityamondal-ai-spec/aditya-portfolio',

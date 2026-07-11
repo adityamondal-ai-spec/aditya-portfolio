@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 type Cls = 'positive' | 'neutral' | 'negative'
-type Point = { x: number; y: number; cls: Cls; snippet: string }
+type Point = { x: number; y: number; cls: Cls; pred: Cls; snippet: string }
 
 const COLORS: Record<Cls, string> = {
   positive: '#1f5c46',
@@ -9,56 +9,13 @@ const COLORS: Record<Cls, string> = {
   negative: '#a6402f',
 }
 
-const SNIPPETS: Record<Cls, string[]> = {
-  positive: [
-    '"Exactly what I was hoping for."',
-    '"Would order again without hesitation."',
-    '"Better than expected, honestly."',
-  ],
-  neutral: [
-    '"It was fine. Nothing special."',
-    '"Did the job, no complaints, no praise."',
-    '"Average — matches the price."',
-  ],
-  negative: [
-    '"Not worth the money."',
-    '"Wouldn\'t recommend this one."',
-    '"Disappointing given the reviews."',
-  ],
-}
-
-function makePoints(): Point[] {
-  const pts: Point[] = []
-  const bands: { cls: Cls; center: number }[] = [
-    { cls: 'positive', center: 0.165 },
-    { cls: 'neutral', center: 0.5 },
-    { cls: 'negative', center: 0.835 },
-  ]
-  let seed = 42
-  function rand() {
-    // deterministic PRNG so the scatter is stable across renders/reloads
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff
-    return (seed / 0x7fffffff)
-  }
-  for (const band of bands) {
-    for (let i = 0; i < 24; i++) {
-      const x = 0.04 + rand() * 0.92
-      const noise = (rand() - 0.5) * 0.22
-      const y = Math.min(0.97, Math.max(0.03, band.center + noise))
-      const snippets = SNIPPETS[band.cls]
-      pts.push({ x, y, cls: band.cls, snippet: snippets[i % snippets.length] })
-    }
-  }
-  return pts
-}
-
-export default function BoundaryViz() {
+export default function BoundaryViz({ variant = 'embedded' }: { variant?: 'embedded' | 'fullbleed' }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const points = useRef<Point[]>(makePoints())
+  const points = useRef<Point[]>([])
+  const [loaded, setLoaded] = useState(false)
   const dims = useRef({ width: 480, height: 380 })
   const progress = useRef(0)
-  const scrollAmp = useRef(0.05)
   const hovered = useRef<Point | null>(null)
   const rafId = useRef(0)
   const isVisible = useRef(false)
@@ -67,9 +24,28 @@ export default function BoundaryViz() {
   const [tooltip, setTooltip] = useState<{ x: number; y: number; point: Point } | null>(null)
 
   useEffect(() => {
+    let cancelled = false
+    fetch('/data/decision-space-2d.json')
+      .then((r) => r.json())
+      .then((data: { points: Point[] }) => {
+        if (cancelled) return
+        points.current = data.points
+        setLoaded(true)
+      })
+      .catch(() => {
+        // Leave points.current empty — draw() below just renders nothing,
+        // no fake data ever fills in as a stand-in.
+        if (!cancelled) setLoaded(true)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
-    if (!canvas || !container) return
+    if (!canvas || !container || !loaded) return
 
     const ctx = canvas.getContext('2d')!
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -87,40 +63,10 @@ export default function BoundaryViz() {
     }
     fitCanvas()
 
-    function curveTop(x: number) {
-      return 0.33 + scrollAmp.current * Math.sin(x * Math.PI * 2.6 + 0.4)
-    }
-    function curveBottom(x: number) {
-      return 0.67 + scrollAmp.current * Math.sin(x * Math.PI * 2.2 + 1.2)
-    }
-
     function draw() {
       const { width, height } = dims.current
       ctx.clearRect(0, 0, width, height)
 
-      // boundary curves — thin ink lines, not class-colored (they separate,
-      // they don't belong to a class)
-      ctx.strokeStyle = 'rgba(28,27,23,0.35)'
-      ctx.lineWidth = 1.25
-      ctx.setLineDash([4, 4])
-      const revealX = width * Math.min(1, progress.current * 1.15)
-
-      for (const curve of [curveTop, curveBottom]) {
-        ctx.beginPath()
-        const steps = 60
-        for (let i = 0; i <= steps; i++) {
-          const xn = i / steps
-          const px = xn * width
-          if (px > revealX) break
-          const py = curve(xn) * height
-          if (i === 0) ctx.moveTo(px, py)
-          else ctx.lineTo(px, py)
-        }
-        ctx.stroke()
-      }
-      ctx.setLineDash([])
-
-      // points
       const pts = points.current
       const visibleCount = Math.ceil(pts.length * Math.min(1, progress.current * 1.3))
       for (let i = 0; i < visibleCount; i++) {
@@ -209,10 +155,6 @@ export default function BoundaryViz() {
         scrollRaf = 0
         const rect = container!.getBoundingClientRect()
         canvasRect.current = { left: rect.left, top: rect.top }
-        const scrollable = document.documentElement.scrollHeight - window.innerHeight
-        const t = scrollable > 0 ? window.scrollY / scrollable : 0
-        scrollAmp.current = 0.05 - t * 0.03
-        draw()
       })
     }
 
@@ -277,20 +219,24 @@ export default function BoundaryViz() {
       window.removeEventListener('resize', handleResize)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [])
+  }, [loaded])
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[320px] sm:h-[380px]"
-      style={{ background: 'var(--paper-raised)', border: '1px solid var(--line)' }}
+      className={variant === 'fullbleed' ? 'relative w-full h-full' : 'relative w-full h-[320px] sm:h-[380px]'}
+      style={
+        variant === 'fullbleed'
+          ? { background: 'var(--paper)' }
+          : { background: 'var(--paper-raised)', border: '1px solid var(--line)' }
+      }
     >
       <canvas ref={canvasRef} className="block w-full h-full" />
       {tooltip && (
         <div
-          className="absolute pointer-events-none px-3 py-2 text-xs max-w-[200px]"
+          className="absolute pointer-events-none px-3 py-2 text-xs max-w-[240px]"
           style={{
-            left: Math.min(tooltip.x + 12, dims.current.width - 210),
+            left: Math.min(tooltip.x + 12, dims.current.width - 250),
             top: Math.max(tooltip.y - 46, 8),
             background: 'var(--paper)',
             border: '1px solid var(--line)',
@@ -298,10 +244,13 @@ export default function BoundaryViz() {
             color: 'var(--ink)',
           }}
         >
-          <div style={{ color: COLORS[tooltip.point.cls] }} className="font-semibold uppercase text-[10px] mb-1">
-            {tooltip.point.cls}
+          <div className="flex items-center gap-2 mb-1 text-[10px] uppercase font-semibold">
+            <span style={{ color: COLORS[tooltip.point.cls] }}>true: {tooltip.point.cls}</span>
+            {tooltip.point.pred !== tooltip.point.cls && (
+              <span style={{ color: COLORS[tooltip.point.pred] }}>&rarr; pred: {tooltip.point.pred}</span>
+            )}
           </div>
-          {tooltip.point.snippet}
+          <span style={{ color: 'var(--ink-dim)' }}>&ldquo;{tooltip.point.snippet}&rdquo;</span>
         </div>
       )}
     </div>

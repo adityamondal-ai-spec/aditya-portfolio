@@ -195,6 +195,10 @@ export default function HeroFlow() {
       const tick = (now: number) => {
         rafId = requestAnimationFrame(tick)
         if (document.hidden) return
+        // Boundary.tsx sets this while its full-viewport 3D takeover is
+        // open — this canvas sits at z-index -1 behind it, fully hidden,
+        // so there's no reason to keep spending CPU/GPU redrawing it.
+        if (document.documentElement.hasAttribute('data-3d-takeover')) return
         draw((now - start) / 1000)
       }
       rafId = requestAnimationFrame(tick)
