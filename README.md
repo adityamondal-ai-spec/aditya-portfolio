@@ -25,3 +25,4 @@ The `src/` directory contains a separate, complete **React 19 + TypeScript + Vit
 - `standalone.html` — a single-file, no-build export of the React app's design, for portability/sharing.
 - `DESIGN_PROMPT.md` — a design-system brief for the React app's "Working Paper" aesthetic.
 - `site-review/` — screenshots and notes from a visual audit of the live static site.
+
