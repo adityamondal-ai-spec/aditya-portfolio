@@ -66,6 +66,80 @@ export const projects: Project[] = [
   },
 ]
 
+export type ClientProject = {
+  name: string
+  kind: string
+  period?: string
+  tagline: string
+  description: string
+  bullets: string[]
+  scope: string[]
+  link?: string
+  status?: string
+}
+
+// Real client engagements. Every fact below is drawn from the live sites
+// (title/meta/headings) or the tool itself -- no invented metrics.
+export const clientWork: ClientProject[] = [
+  {
+    name: 'Jai Matadi Consultancy',
+    kind: 'EPFO · ESI · Professional Tax · Malda',
+    period: 'Since 2004',
+    tagline: 'A 22-year EPFO/ESI practice, distilled to one clear call to action.',
+    description:
+      'Editorial single-page site for a Malda EPFO/ESI/Professional-Tax consultancy — a "one desk, one person" layout that turns a two-decade practice into a single, plain-language call to action.',
+    bullets: [
+      'Own custom domain (jaimatadiconsultancy.in), live on Google with a connected Google Business Profile and indexed pages.',
+      'Plain-language service breakdown — PF claims, EPS-95 pension, monthly ECR & challan, ESI registration and notices.',
+      'Person-first framing ("You deal with a person, not a firm") built around a single "Make one call" action.',
+    ],
+    scope: ['Own domain', 'Google Business Profile', 'Indexed on Google'],
+    link: 'https://jaimatadiconsultancy.in',
+  },
+  {
+    name: 'Navraj Raja',
+    kind: 'Certified Personal Trainer · Malda',
+    tagline: 'Certified trainer — proof before the pitch.',
+    description:
+      'Dark, cinematic site for a certified personal trainer — credentials-first, so the verifiable proof lands before any sales copy.',
+    bullets: [
+      'Opens on verifiable proof — "Every one of these can be checked" — putting certifications ahead of marketing.',
+      'Three clear ways to work together, plus a "how the first month goes" walkthrough.',
+      'Dark cinematic visual treatment throughout.',
+    ],
+    scope: ['Dark cinematic', 'Credentials-first', 'Live'],
+    link: 'https://navraj-raja.vercel.app',
+  },
+  {
+    name: 'Pandua Pharmacy',
+    kind: 'D.Pharm College · Pandua, Malda',
+    tagline: 'PCI-approved D.Pharm college — admissions-first.',
+    description:
+      'Admissions site for a PCI-approved D.Pharmacy institute — facilities and faculty up front, driving a live admissions call to action.',
+    bullets: [
+      'Presents a PCI-approved D.Pharm college: laboratories, experienced faculty and hostel facility.',
+      'Admissions-driven — a live push for the 2025–2027 batch.',
+      'SEO-shaped title and metadata targeting "D.Pharmacy college, Malda".',
+    ],
+    scope: ['Admissions-focused', 'SEO-shaped', 'Live'],
+    link: 'https://pandua-pharmacy.vercel.app',
+  },
+  {
+    name: 'Munshi',
+    kind: 'Windows Document Automation · Internal Tool',
+    tagline: 'ECR converter + right-click tools, used every day.',
+    description:
+      'A Windows document-automation tool in daily use on a real desk — an ECR converter plus right-click shortcuts for the PF/ESI paperwork workflow.',
+    bullets: [
+      'ECR converter that turns raw payroll data into EPFO-ready ECR files.',
+      'Right-click (shell) tools wired into the everyday document workflow.',
+      'In daily production use — runs on the operator\'s PC, no public URL.',
+    ],
+    scope: ['Windows', 'Document automation', 'In daily use'],
+    status: 'Internal tool — no public URL',
+  },
+]
+
 export type ExperienceItem = {
   title: string
   org: string

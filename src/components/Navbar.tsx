@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 const links = [
   { label: 'Introduction', href: '#about' },
   { label: 'Work', href: '#work' },
+  { label: 'Clients', href: '#clients' },
   { label: 'Log', href: '#log' },
   { label: 'Contact', href: '#contact' },
 ]
@@ -17,6 +18,7 @@ const links = [
 const SETTLED_FRACTIONS: Record<string, number> = {
   '#about': 0.3,
   '#work': 0.25,
+  '#clients': 0.3,
   '#log': 0.15,
   '#contact': 0.2,
 }

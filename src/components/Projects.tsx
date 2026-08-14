@@ -3,7 +3,7 @@ import { projects } from '../data/resume'
 
 // A small static decoration — same visual language as The Boundary, but
 // cheap (no canvas/JS) since it's purely illustrative here.
-function MiniThumb({ seed }: { seed: number }) {
+export function MiniThumb({ seed }: { seed: number }) {
   const colors = ['#1f5c46', '#b8892e', '#a6402f']
   const pts = Array.from({ length: 14 }, (_, i) => {
     const x = 6 + ((i * 37 + seed * 13) % 88)

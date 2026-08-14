@@ -1,6 +1,7 @@
 import Hero from './Hero'
 import Stats from './Stats'
 import About from './About'
+import ClientWork from './ClientWork'
 import Projects from './Projects'
 import Experience from './Experience'
 import SentimentQuiz from './SentimentQuiz'
@@ -15,6 +16,7 @@ export default function ClassicExperience() {
       <Hero />
       <Stats />
       <About />
+      <ClientWork />
       <Projects />
       <Experience />
       <SentimentQuiz />
