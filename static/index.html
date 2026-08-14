@@ -131,6 +131,23 @@
   #s5 .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12vh; border-top: 1px solid rgba(245,241,236,.14); padding-top: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .16em; color: rgba(245,241,236,.4); flex-wrap: wrap; gap: 12px; }
   #s5 .footer .end { color: #ff4d1f; }
 
+  /* ---------- Client Work ---------- */
+  #sclients { padding: 16vh min(6vw,72px); position: relative; }
+  #sclients .label { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .18em; color: rgba(245,241,236,.5); margin-bottom: clamp(10px,2.5vh,26px); }
+  #sclients .cw-h2 { margin: 0 0 clamp(6px,1.4vh,12px); font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(34px, min(8.5vw,12vh), 128px); line-height: .95; letter-spacing: .01em; text-transform: uppercase; }
+  #sclients .cw-sub { margin: 0 0 clamp(26px,5vh,56px); font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .14em; color: rgba(245,241,236,.5); text-transform: uppercase; }
+  .cw-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: clamp(16px,2.4vw,28px); }
+  @media (max-width: 720px) { .cw-grid { grid-template-columns: 1fr; } }
+  .cwcard { border: 1px solid rgba(245,241,236,.14); background: linear-gradient(160deg,#100c0a 0%,#0a0807 60%,#060505 100%); padding: clamp(18px,2.4vw,32px); display: flex; flex-direction: column; gap: clamp(10px,1.6vh,16px); }
+  .cwcard .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .cwcard .idx { font-family: 'Anton', sans-serif; font-size: clamp(24px,4vw,44px); line-height: 1; color: rgba(245,241,236,.12); }
+  .cwcard .tags { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; color: #ff4d1f; text-align: right; text-transform: uppercase; }
+  .cwcard h3 { margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(22px, min(4vw,5vh), 40px); line-height: 1; text-transform: uppercase; letter-spacing: .01em; }
+  .cwcard p { margin: 0; font-size: clamp(13px,1.3vw,15px); line-height: 1.55; color: rgba(245,241,236,.65); text-wrap: pretty; }
+  .cwcard .link { display: flex; align-items: center; gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .14em; color: #ff4d1f; margin-top: auto; }
+  .cwcard .link:hover { color: #f5f1ec; }
+  .cwcard .nolink { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .14em; color: rgba(245,241,236,.4); margin-top: auto; text-transform: uppercase; }
+
   /* grain */
   #grain { position: fixed; inset: 0; pointer-events: none; opacity: .06; z-index: 50;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="160" height="160" filter="url(%23n)"/></svg>'); }
@@ -169,11 +186,61 @@
   </div>
 </section>
 
+<!-- SCENE — CLIENT WORK -->
+<section id="sclients">
+  <div class="label">03 / SHIPPED FOR REAL CLIENTS</div>
+  <h2 class="cw-h2">Client Work<span style="color:#ff4d1f;">.</span></h2>
+  <p class="cw-sub">Paid, shipped, and in daily use — not coursework.</p>
+  <div class="cw-grid">
+
+    <article class="cwcard">
+      <div class="top">
+        <div class="idx">01</div>
+        <div class="tags">EPFO · ESI · P-TAX · MALDA</div>
+      </div>
+      <h3>Jai Matadi Consultancy</h3>
+      <p>A 22-year EPFO/ESI practice, distilled to one clear call to action — own domain, live Google Business Profile, indexed on Google.</p>
+      <a class="link" href="https://jaimatadiconsultancy.in" target="_blank" rel="noopener">JAIMATADICONSULTANCY.IN <span aria-hidden="true">↗</span></a>
+    </article>
+
+    <article class="cwcard">
+      <div class="top">
+        <div class="idx">02</div>
+        <div class="tags">PERSONAL TRAINER · MALDA</div>
+      </div>
+      <h3>Navraj Raja</h3>
+      <p>Dark, cinematic site for a certified personal trainer — credentials-first, so the proof lands before the pitch.</p>
+      <a class="link" href="https://navraj-raja.vercel.app" target="_blank" rel="noopener">NAVRAJ-RAJA.VERCEL.APP <span aria-hidden="true">↗</span></a>
+    </article>
+
+    <article class="cwcard">
+      <div class="top">
+        <div class="idx">03</div>
+        <div class="tags">D.PHARM COLLEGE · MALDA</div>
+      </div>
+      <h3>Pandua Pharmacy</h3>
+      <p>Admissions site for a PCI-approved D.Pharm college — labs, faculty and hostel up front, driving a live admissions push.</p>
+      <a class="link" href="https://pandua-pharmacy.vercel.app" target="_blank" rel="noopener">PANDUA-PHARMACY.VERCEL.APP <span aria-hidden="true">↗</span></a>
+    </article>
+
+    <article class="cwcard">
+      <div class="top">
+        <div class="idx">04</div>
+        <div class="tags">WINDOWS AUTOMATION · INTERNAL</div>
+      </div>
+      <h3>Munshi</h3>
+      <p>A Windows document-automation tool in daily use — an ECR converter plus right-click shortcuts for the PF/ESI paperwork workflow.</p>
+      <div class="nolink">INTERNAL TOOL — NO PUBLIC URL</div>
+    </article>
+
+  </div>
+</section>
+
 <!-- SCENE 3 — PROJECTS -->
 <section id="s3">
   <div class="sticky">
     <div class="hdr">
-      <div class="mono label">03 / THE IDEAS, SHIPPED</div>
+      <div class="mono label">04 / THE IDEAS, SHIPPED</div>
       <div class="mono counter" id="counter">01 — 03</div>
     </div>
     <h2 class="anton">Projects<span style="color:#ff4d1f;">.</span></h2>
@@ -242,7 +309,7 @@
 
 <!-- SCENE 4 — SKILLS -->
 <section id="s4">
-  <div class="label">04 / CAPABILITIES</div>
+  <div class="label">05 / CAPABILITIES</div>
   <div class="skill"><div class="num">01</div><div class="wrap"><div class="outline">Python</div><div class="fill" aria-hidden="true">Python</div></div><div class="meta">Core language</div></div>
   <div class="skill"><div class="num">02</div><div class="wrap"><div class="outline">scikit-learn</div><div class="fill" aria-hidden="true">scikit-learn</div></div><div class="meta">ML pipelines</div></div>
   <div class="skill"><div class="num">03</div><div class="wrap"><div class="outline">React</div><div class="fill" aria-hidden="true">React</div></div><div class="meta">Interfaces</div></div>
@@ -256,7 +323,7 @@
 <!-- SCENE 5 — CONTACT / OUTRO -->
 <section id="s5">
   <div id="outro">
-    <div class="label">05 / CONTACT <span class="cursor">█</span></div>
+    <div class="label">06 / CONTACT <span class="cursor">█</span></div>
     <h2>Aditya<br>Mondal<span style="color:#ff4d1f;">.</span></h2>
     <p class="bio">B.Tech in AI/ML at Jain University, Bengaluru. Building at the intersection of machine learning and interactive graphics. Open to internships and collaborations.</p>
     <div class="pills">
