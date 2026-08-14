@@ -4,21 +4,23 @@
 
 ## What's actually deployed
 
-The live site is `static/index.html` — a single, self-contained, **hand-built vanilla HTML/CSS/JavaScript** page (no framework, no build step). Deployment is configured via `vercel.json`, which points Vercel at `static/` as the output directory and skips the build step entirely.
-
-Features: a canvas-based constellation/particle background, a live in-browser sentiment classifier demo you can type into, a magnetic cursor that pulls toward links, a scroll-progress bar, and scroll-triggered reveals — all vanilla JS, no dependencies.
+The live site is the **React 19 + TypeScript + Vite** app in `src/` — the "Working Paper" design: a paper/ink editorial aesthetic with a canvas decision-boundary visualization, a scroll-drawn ink line, a spring-eased custom cursor, and (on wide/fine-pointer desktops) a pinned cinematic scroll-story. Vercel builds it via `vercel.json` (`buildCommand: npm run build`, `outputDirectory: dist`).
 
 ### Running it locally
 
-It's a static file — just open it, or serve the `static/` folder with anything:
+```bash
+npm install && npm run dev
+```
+
+## `static/index.html` — an alternate vanilla build
+
+`static/index.html` is a separate, self-contained **hand-built vanilla HTML/CSS/JavaScript** page (no framework, no build step) implementing the same portfolio. It was briefly the production deploy; the deploy has since been switched back to the React app above. It's kept in the repo as a no-dependency fallback — to serve it instead, point `vercel.json`'s `outputDirectory` back at `static/` (with `buildCommand: "true"`).
+
+Serve it locally with:
 
 ```bash
 npx serve static
 ```
-
-## `src/` — an undeployed React app
-
-The `src/` directory contains a separate, complete **React 19 + TypeScript + Vite** implementation of this portfolio (the "Working Paper" design: a paper/ink editorial aesthetic with a canvas decision-boundary visualization, a scroll-drawn ink line, and a spring-eased custom cursor). It builds and runs correctly (`npm install && npm run dev`), but **it is not what's currently live** — the production deploy was switched to the static bundle above. It's kept in the repo in case work resumes on it; switching back means removing `vercel.json` (or pointing it at the Vite build output instead of `static/`).
 
 ## Other files
 
