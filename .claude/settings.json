@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); case \"$f\" in *src/*.ts|*src/*.tsx) cd \"${CLAUDE_PROJECT_DIR:-.}\"; if [ -x ./node_modules/.bin/oxlint ]; then ./node_modules/.bin/oxlint \"$f\" 2>&1 || true; else npx --no-install oxlint \"$f\" 2>&1 || true; fi ;; esac"
+          }
+        ]
+      }
+    ]
+  }
+}
